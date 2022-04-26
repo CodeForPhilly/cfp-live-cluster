@@ -69,6 +69,42 @@ spec:
                   optional: false
             - name: DB_NAME
               value: pa-wildflower-selector
+            - name: MASTER_CSV_URL
+              valueFrom:
+                secretKeyRef:
+                  key: MASTER_CSV_URL
+                  name: app
+                  optional: false
+            - name: ARTICLES_CSV_URL
+              valueFrom:
+                secretKeyRef:
+                  key: ARTICLES_CSV_URL
+                  name: app
+                  optional: false
+            - name: IMAGE_URLS_SHEET_ID
+              valueFrom:
+                secretKeyRef:
+                  key: IMAGE_URLS_SHEET_ID
+                  name: app
+                  optional: false
+            - name: SUPERPLANTS_CSV_URL
+              valueFrom:
+                secretKeyRef:
+                  key: SUPERPLANTS_CSV_URL
+                  name: app
+                  optional: false
+            - name: LOCAL_MAP_CSV_URL
+              valueFrom:
+                secretKeyRef:
+                  key: LOCAL_MAP_CSV_URL
+                  name: app
+                  optional: false
+            - name: ONLINE_STORES_CSV_URL
+              valueFrom:
+                secretKeyRef:
+                  key: ONLINE_STORES_CSV_URL
+                  name: app
+                  optional: false
           envFrom:
             - configMapRef:
                 name: app-config
