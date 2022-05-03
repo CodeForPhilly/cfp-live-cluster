@@ -99,17 +99,35 @@ spec:
                   key: LOCAL_MAP_CSV_URL
                   name: app
                   optional: false
+            - name: CONTACT_SHEET_ID
+              valueFrom:
+                secretKeyRef:
+                  key: CONTACT_SHEET_ID
+                  name: app
+                  optional: false
+            - name: CONTACT_FILES_FOLDER_ID
+              valueFrom:
+                secretKeyRef:
+                  key: CONTACT_FILES_FOLDER_ID
+                  name: app
+                  optional: false
             - name: ONLINE_STORES_CSV_URL
               valueFrom:
                 secretKeyRef:
                   key: ONLINE_STORES_CSV_URL
                   name: app
                   optional: false
+            - name: SERVICE_ACCOUNT
+              valueFrom:
+                secretKeyRef:
+                  key: SERVICE_ACCOUNT
+                  name: app
+                  optional: false
           envFrom:
             - configMapRef:
                 name: app-config
                 optional: true
-          image: 'ghcr.io/codeforphilly/pa-wildflower-selector/app:0.1.1'
+          image: 'ghcr.io/codeforphilly/pa-wildflower-selector/app:0.1.2'
           imagePullPolicy: Always
           livenessProbe:
             httpGet:
