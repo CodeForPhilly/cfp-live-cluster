@@ -24,7 +24,31 @@ spec:
                   number: 80
             path: /
             pathType: Prefix
+    - host: choosenativeplants.com
+      http:
+        paths:
+          - backend:
+              service:
+                name: choose-native-plants
+                port:
+                  number: 80
+            path: /
+            pathType: Prefix
+    - host: www.choosenativeplants.com
+      http:
+        paths:
+          - backend:
+              service:
+                name: choose-native-plants
+                port:
+                  number: 80
+            path: /
+            pathType: Prefix
   tls:
     - hosts:
         - choose-native-plants.live.k8s.phl.io
       secretName: choose-native-plants-tls
+    - hosts:
+        - choosenativeplants.com
+        - www.choosenativeplants.com
+      secretName: choose-native-plants-live-tls
