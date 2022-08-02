@@ -1,4 +1,4 @@
-apiVersion: networking.k8s.io/v1beta1
+apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   annotations:
@@ -38,15 +38,19 @@ spec:
       http:
         paths:
           - backend:
-              serviceName: chime
-              servicePort: 80
+              service:
+                name: chime
+                port:
+                  number: 80
             path: /
     - host: penn-chime.live.k8s.phl.io
       http:
         paths:
           - backend:
-              serviceName: chime
-              servicePort: 80
+              service:
+                name: chime
+                port:
+                  number: 80
             path: /
   tls:
     - hosts:
