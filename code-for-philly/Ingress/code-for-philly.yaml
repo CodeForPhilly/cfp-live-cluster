@@ -1,4 +1,4 @@
-apiVersion: networking.k8s.io/v1beta1
+apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   annotations:
@@ -20,23 +20,32 @@ spec:
       http:
         paths:
           - backend:
-              serviceName: code-for-philly-site
-              servicePort: 80
+              service:
+                name: code-for-philly-site
+                port:
+                  number: 80
             path: /
+            pathType: Prefix
     - host: codeforphilly.live.k8s.phl.io
       http:
         paths:
           - backend:
-              serviceName: code-for-philly-site
-              servicePort: 80
+              service:
+                name: code-for-philly-site
+                port:
+                  number: 80
             path: /
+            pathType: Prefix
     - host: www.codeforphilly.org
       http:
         paths:
           - backend:
-              serviceName: code-for-philly-site
-              servicePort: 80
+              service:
+                name: code-for-philly-site
+                port:
+                  number: 80
             path: /
+            pathType: Prefix
   tls:
     - hosts:
         - codeforphilly.org
