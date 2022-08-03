@@ -1,5 +1,5 @@
 [hololens]
-package = "holo/lens-helm3/1.5"
+package = "holo/lens-helm3/1.22"
 
 [hololens.input]
 root = "vaultwarden"
