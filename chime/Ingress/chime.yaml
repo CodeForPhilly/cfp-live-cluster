@@ -43,6 +43,7 @@ spec:
                 port:
                   number: 80
             path: /
+            pathType: Prefix
     - host: penn-chime.live.k8s.phl.io
       http:
         paths:
@@ -52,6 +53,7 @@ spec:
                 port:
                   number: 80
             path: /
+            pathType: Prefix
   tls:
     - hosts:
         - penn-chime.phl.io
