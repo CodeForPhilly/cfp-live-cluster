@@ -63,7 +63,7 @@ spec:
                 name: saml2
             - secretRef:
                 name: slack
-          image: 'ghcr.io/codeforphilly/codeforphilly.org/site-composite:1.2.0'
+          image: 'ghcr.io/codeforphilly/codeforphilly.org/site-composite:1.2.1'
           imagePullPolicy: Always
           name: code-for-philly-site
           ports:
