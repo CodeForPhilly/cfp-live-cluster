@@ -1,4 +1,5 @@
 image:
+  repository: ghcr.io/codeforphilly/chime/penn-chime
   tag: 1.1.5
 
 ingress:
