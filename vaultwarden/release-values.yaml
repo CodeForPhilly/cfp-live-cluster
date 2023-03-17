@@ -4,7 +4,7 @@
 
 # override version until https://github.com/gissilabs/charts/issues/31
 image:
-  tag: 1.24.0
+  tag: 1.27.0
 
 ingress:
   enabled: true
