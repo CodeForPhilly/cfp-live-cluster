@@ -51,6 +51,10 @@ database:
 persistence:
   enabled: true
 
+# must use Recreate strategy with persistent volume for attachment data
+strategy:
+    type: Recreate
+
 backups:
   enabled: true
   snitchUrl: "https://nosnch.in/126d237239"
