@@ -1,0 +1,19 @@
+[hololens]
+package = "holo/lens-helm3/1.22"
+
+[hololens.input]
+root = "third-places"
+files = "**"
+
+[hololens.output]
+merge = "replace"
+
+[hololens.helm]
+namespace = "third-places"
+release_name = "third-places"
+namespace_fill = true
+
+chart_path = "helm-chart"
+value_files = [
+    "release-values.yaml"
+]

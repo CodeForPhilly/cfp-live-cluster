@@ -1,0 +1,12 @@
+ingress:
+  enabled: true
+  className: nginx
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+  hosts:
+    - host: third-places.live.k8s.phl.io
+      paths: [ '/' ]
+  tls:
+    - secretName: choose-native-plants-tls
+      hosts:
+        - third-places.live.k8s.phl.io
