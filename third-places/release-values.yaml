@@ -7,6 +7,6 @@ ingress:
     - host: third-places.live.k8s.phl.io
       paths: [ '/' ]
   tls:
-    - secretName: choose-native-plants-tls
+    - secretName: third-places-tls
       hosts:
         - third-places.live.k8s.phl.io
