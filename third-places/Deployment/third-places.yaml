@@ -31,7 +31,10 @@ spec:
             - name: PGPORT
               value: '5432'
             - name: PGDATABASE
-              value: thirdplaces
+              valueFrom:
+                secretKeyRef:
+                  key: POSTGRES_DB
+                  name: postgresql
             - name: PGUSER
               valueFrom:
                 secretKeyRef:
