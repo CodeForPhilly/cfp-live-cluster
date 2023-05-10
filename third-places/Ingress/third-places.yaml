@@ -20,10 +20,24 @@ spec:
         paths:
           - backend:
               service:
+                name: third-places-frontend
+                port:
+                  name: http
+            path: /
+            pathType: Prefix
+          - backend:
+              service:
                 name: third-places
                 port:
-                  number: 80
-            path: /
+                  name: http
+            path: /api/
+            pathType: Prefix
+          - backend:
+              service:
+                name: third-places
+                port:
+                  name: http
+            path: /admin/
             pathType: Prefix
   tls:
     - hosts:
