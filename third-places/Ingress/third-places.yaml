@@ -1,0 +1,31 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+  labels:
+    app.kubernetes.io/component: application
+    app.kubernetes.io/instance: third-places
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: third-places
+    app.kubernetes.io/version: 0.1.2
+    helm.sh/chart: third-places-0.1.0
+  name: third-places
+  namespace: third-places
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: third-places.live.k8s.phl.io
+      http:
+        paths:
+          - backend:
+              service:
+                name: third-places
+                port:
+                  number: 80
+            path: /
+            pathType: Prefix
+  tls:
+    - hosts:
+        - third-places.live.k8s.phl.io
+      secretName: choose-native-plants-tls

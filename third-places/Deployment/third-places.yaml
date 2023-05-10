@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app.kubernetes.io/component: application
+    app.kubernetes.io/instance: third-places
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: third-places
+    app.kubernetes.io/version: 0.1.2
+    helm.sh/chart: third-places-0.1.0
+  name: third-places
+  namespace: third-places
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: application
+      app.kubernetes.io/instance: third-places
+      app.kubernetes.io/name: third-places
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/component: application
+        app.kubernetes.io/instance: third-places
+        app.kubernetes.io/name: third-places
+    spec:
+      containers:
+        - image: 'ghcr.io/codeforphilly/third-places:0.1.2'
+          imagePullPolicy: IfNotPresent
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+          name: third-places
+          ports:
+            - containerPort: 80
+              name: http
+              protocol: TCP
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+          resources: {}
