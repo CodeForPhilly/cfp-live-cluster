@@ -1,9 +1,9 @@
 image:
-  tag: 0.1.10
+  tag: 0.1.11
 
 frontend:
   image:
-    tag: 0.1.10
+    tag: 0.1.11
 
 ingress:
   enabled: true
