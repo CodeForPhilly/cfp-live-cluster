@@ -39,6 +39,13 @@ spec:
                   name: http
             path: /admin/
             pathType: Prefix
+          - backend:
+              service:
+                name: third-places
+                port:
+                  name: http
+            path: /static/admin/
+            pathType: Prefix
   tls:
     - hosts:
         - third-places.live.k8s.phl.io
