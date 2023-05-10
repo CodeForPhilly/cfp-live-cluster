@@ -27,11 +27,13 @@ spec:
       containers:
         - args:
             - runserver
-            - '80'
+            - '0.0.0.0:80'
           command:
             - python3
             - manage.py
           env:
+            - name: DJANGO_ALLOWED_HOSTS
+              value: '*'
             - name: PGHOST
               value: third-places-postgresql
             - name: PGPORT
@@ -51,7 +53,7 @@ spec:
                 secretKeyRef:
                   key: POSTGRES_PASSWORD
                   name: postgresql
-          image: 'ghcr.io/codeforphilly/third-places:0.1.2'
+          image: 'ghcr.io/codeforphilly/third-places:0.1.8'
           imagePullPolicy: IfNotPresent
           livenessProbe:
             httpGet:
