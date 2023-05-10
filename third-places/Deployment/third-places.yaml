@@ -53,7 +53,7 @@ spec:
                 secretKeyRef:
                   key: POSTGRES_PASSWORD
                   name: postgresql
-          image: 'ghcr.io/codeforphilly/third-places:0.1.10'
+          image: 'ghcr.io/codeforphilly/third-places:0.1.11'
           imagePullPolicy: IfNotPresent
           livenessProbe:
             httpGet:
