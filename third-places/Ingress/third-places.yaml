@@ -3,6 +3,7 @@ kind: Ingress
 metadata:
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt-prod
+    kubernetes.io/ingress.class: nginx
   labels:
     app.kubernetes.io/component: application
     app.kubernetes.io/instance: third-places
@@ -13,7 +14,6 @@ metadata:
   name: third-places
   namespace: third-places
 spec:
-  ingressClassName: nginx
   rules:
     - host: third-places.live.k8s.phl.io
       http:
@@ -28,4 +28,4 @@ spec:
   tls:
     - hosts:
         - third-places.live.k8s.phl.io
-      secretName: choose-native-plants-tls
+      secretName: third-places-tls
