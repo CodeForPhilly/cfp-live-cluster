@@ -25,7 +25,13 @@ spec:
         app.kubernetes.io/name: third-places
     spec:
       containers:
-        - env:
+        - args:
+            - runserver
+            - '80'
+          command:
+            - python3
+            - manage.py
+          env:
             - name: PGHOST
               value: third-places-postgresql
             - name: PGPORT
@@ -49,7 +55,7 @@ spec:
           imagePullPolicy: IfNotPresent
           livenessProbe:
             httpGet:
-              path: /
+              path: /api/
               port: http
           name: third-places
           ports:
@@ -58,6 +64,6 @@ spec:
               protocol: TCP
           readinessProbe:
             httpGet:
-              path: /
+              path: /api/
               port: http
           resources: {}
