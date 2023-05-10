@@ -25,7 +25,24 @@ spec:
         app.kubernetes.io/name: third-places
     spec:
       containers:
-        - image: 'ghcr.io/codeforphilly/third-places:0.1.2'
+        - env:
+            - name: PGHOST
+              value: third-places-postgresql
+            - name: PGPORT
+              value: '5432'
+            - name: PGDATABASE
+              value: thirdplaces
+            - name: PGUSER
+              valueFrom:
+                secretKeyRef:
+                  key: POSTGRES_USER
+                  name: postgresql
+            - name: PGPASSWORD
+              valueFrom:
+                secretKeyRef:
+                  key: POSTGRES_PASSWORD
+                  name: postgresql
+          image: 'ghcr.io/codeforphilly/third-places:0.1.2'
           imagePullPolicy: IfNotPresent
           livenessProbe:
             httpGet:
