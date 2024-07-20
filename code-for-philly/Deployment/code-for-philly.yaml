@@ -39,10 +39,19 @@ spec:
                 default_timezone = "America/New_York"
 
                 [sites.default]
+                handle = "code-for-philly"
                   primary_hostname = "codeforphilly.org"
                   title = "Code for Philly"
 
                 [core]
+
+                [limit]
+                  memory = "200M"
+                  post = "200M"
+                  execution_time = "30"
+
+                [cache]
+                  size = "512M"
             - name: HAB_MYSQL
               value: |
                 app_username = "admin"
@@ -70,6 +79,13 @@ spec:
             - containerPort: 80
               name: http
               protocol: TCP
+            - containerPort: 3306
+              name: mysql
+              protocol: TCP
+          resources:
+            limits: {}
+            requests:
+              memory: 300Mi
           volumeMounts:
             - mountPath: /hab/svc/site/data
               name: code-for-philly-site

@@ -14,6 +14,9 @@ spec:
     - name: http
       port: 80
       protocol: TCP
+    - name: mysql
+      port: 3306
+      protocol: TCP
   selector:
     app.kubernetes.io/instance: code-for-philly
     app.kubernetes.io/name: code-for-philly
