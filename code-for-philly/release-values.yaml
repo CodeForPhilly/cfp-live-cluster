@@ -5,8 +5,8 @@ site:
   # canonicalHostname: codeforphilly.live.k8s.phl.io
 
   image:
-    repository: ghcr.io/codeforphilly/codeforphilly.org/site-composite
-    tag: 1.3.8
+    repository: ghcr.io/codeforphilly/codeforphilly.org
+    tag: 1.3.9
 
   secrets:
     - name: 'discourse'
