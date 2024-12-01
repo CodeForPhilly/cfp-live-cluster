@@ -1,0 +1,19 @@
+[hololens]
+package = "holo/lens-helm3/1.22"
+
+[hololens.input]
+root = "squadquest-supabase"
+files = "**"
+
+[hololens.output]
+merge = "replace"
+
+[hololens.helm]
+namespace = "squadquest-supabase"
+release_name = "squadquest-supabase"
+namespace_fill = true
+
+chart_path = "helm-chart"
+value_files = [
+    "release-values.yaml"
+]

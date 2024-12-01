@@ -1,0 +1,3 @@
+[holosource]
+url = "https://github.com/supabase-community/supabase-kubernetes"
+ref = "refs/heads/main"

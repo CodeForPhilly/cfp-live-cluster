@@ -1,0 +1,11 @@
+[holomapping]
+holosource = "supabase"
+root = "charts/supabase"
+files = [
+    "**",
+    "!ci/**",
+    "!docker/**",
+    "!**/.DS_Store",
+    "README.md",
+    "values.example.yaml"
+]

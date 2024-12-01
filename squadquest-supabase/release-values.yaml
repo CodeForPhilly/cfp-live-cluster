@@ -1,0 +1,57 @@
+# See: https://github.com/supabase-community/supabase-kubernetes/blob/main/charts/supabase/values.yaml
+
+db:
+  enabled: true
+  image:
+    tag: 15.6.1.143
+  livenessProbe:
+    exec:
+      command:
+        - pg_isready
+        - -U
+        - postgres
+    initialDelaySeconds: 3
+
+studio:
+  image:
+    tag: 20241111-d7c6eb1
+
+auth:
+  image:
+    tag: v2.164.0
+
+rest:
+  image:
+    tag: v12.2.3
+
+realtime:
+  image:
+    tag: v2.33.61
+
+meta:
+  image:
+    tag: v0.84.3
+
+storage:
+  image:
+    tag: v1.13.3
+
+imgproxy:
+  image:
+    tag: v3
+
+kong:
+  image:
+    tag: 2.8.5
+
+analytics:
+  image:
+    tag: 1.10.0
+
+vector:
+  image:
+    tag: 0.42.X-alpine
+
+functions:
+  image:
+    tag: v1.65.3
