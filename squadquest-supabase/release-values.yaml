@@ -1,5 +1,9 @@
 # See: https://github.com/supabase-community/supabase-kubernetes/blob/main/charts/supabase/values.yaml
 
+secret:
+  s3:
+    secretRef: linode-storage
+
 db:
   enabled: true
   image:
@@ -35,6 +39,11 @@ meta:
 storage:
   image:
     tag: v1.13.3
+  environment:
+    STORAGE_BACKEND: s3
+    GLOBAL_S3_BUCKET: squadquest-supabase-storage
+    GLOBAL_S3_ENDPOINT: us-east-1.linodeobjects.com
+    GLOBAL_S3_PROTOCOL: https
 
 imgproxy:
   image:
