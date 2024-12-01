@@ -1,0 +1,215 @@
+apiVersion: v1
+data:
+  template.yml: |
+    _format_version: '2.1'
+    _transform: true
+
+    consumers:
+      - username: DASHBOARD
+      - username: anon
+        keyauth_credentials:
+            - key: ${SUPABASE_ANON_KEY}
+      - username: service_role
+        keyauth_credentials:
+            - key: ${SUPABASE_SERVICE_KEY}
+    acls:
+      - consumer: anon
+        group: anon
+      - consumer: service_role
+        group: admin
+    basicauth_credentials:
+      - consumer: DASHBOARD
+        username: ${DASHBOARD_USERNAME}
+        password: ${DASHBOARD_PASSWORD}
+    services:
+      - name: auth-v1-open
+        url: http://squadquest-supabase-supabase-auth:9999/verify
+        routes:
+          - name: auth-v1-open
+            strip_path: true
+            paths:
+              - /auth/v1/verify
+        plugins:
+          - name: cors
+      - name: auth-v1-open-callback
+        url: http://squadquest-supabase-supabase-auth:9999/callback
+        routes:
+          - name: auth-v1-open-callback
+            strip_path: true
+            paths:
+              - /auth/v1/callback
+        plugins:
+          - name: cors
+      - name: auth-v1-open-authorize
+        url: http://squadquest-supabase-supabase-auth:9999/authorize
+        routes:
+          - name: auth-v1-open-authorize
+            strip_path: true
+            paths:
+              - /auth/v1/authorize
+        plugins:
+          - name: cors
+      - name: auth-v1
+        _comment: "GoTrue: /auth/v1/* -> http://squadquest-supabase-supabase-auth:9999/*"
+        url: http://squadquest-supabase-supabase-auth:9999
+        routes:
+          - name: auth-v1-all
+            strip_path: true
+            paths:
+              - /auth/v1/
+        plugins:
+          - name: cors
+          - name: key-auth
+            config:
+              hide_credentials: false
+          - name: acl
+            config:
+              hide_groups_header: true
+              allow:
+                - admin
+                - anon
+      - name: rest-v1
+        _comment: "PostgREST: /rest/v1/* -> http://squadquest-supabase-supabase-rest:3000/*"
+        url: http://squadquest-supabase-supabase-rest:3000/
+        routes:
+          - name: rest-v1-all
+            strip_path: true
+            paths:
+              - /rest/v1/
+        plugins:
+          - name: cors
+          - name: key-auth
+            config:
+              hide_credentials: true
+          - name: acl
+            config:
+              hide_groups_header: true
+              allow:
+                - admin
+                - anon
+      - name: graphql-v1
+        _comment: 'PostgREST: /graphql/v1/* -> http://squadquest-supabase-supabase-rest:3000/rpc/graphql'
+        url: http://squadquest-supabase-supabase-rest:3000/rpc/graphql
+        routes:
+          - name: graphql-v1-all
+            strip_path: true
+            paths:
+              - /graphql/v1
+        plugins:
+          - name: cors
+          - name: key-auth
+            config:
+              hide_credentials: true
+          - name: request-transformer
+            config:
+              add:
+                headers:
+                  - Content-Profile:graphql_public
+          - name: acl
+            config:
+              hide_groups_header: true
+              allow:
+                - admin
+                - anon
+      - name: realtime-v1
+        _comment: "Realtime: /realtime/v1/* -> ws://squadquest-supabase-supabase-realtime:4000/socket/*"
+        url: http://squadquest-supabase-supabase-realtime:4000/socket
+        routes:
+          - name: realtime-v1-all
+            strip_path: true
+            paths:
+              - /realtime/v1/
+        plugins:
+          - name: cors
+          - name: key-auth
+            config:
+              hide_credentials: false
+          - name: acl
+            config:
+              hide_groups_header: true
+              allow:
+                - admin
+                - anon
+      - name: storage-v1
+        _comment: "Storage: /storage/v1/* -> http://squadquest-supabase-supabase-storage:5000/*"
+        url: http://squadquest-supabase-supabase-storage:5000/
+        routes:
+          - name: storage-v1-all
+            strip_path: true
+            paths:
+              - /storage/v1/
+        plugins:
+          - name: cors
+      - name: functions-v1
+        _comment: 'Edge Functions: /functions/v1/* -> http://squadquest-supabase-supabase-functions:9000/*'
+        url: http://functions:9000/
+        routes:
+          - name: functions-v1-all
+            strip_path: true
+            paths:
+              - /functions/v1/
+        plugins:
+          - name: cors
+      - name: analytics-v1
+        _comment: 'Analytics: /analytics/v1/* -> http://squadquest-supabase-supabase-analytics:4000/*'
+        url: http://squadquest-supabase-supabase-analytics:4000/
+        routes:
+          - name: analytics-v1-all
+            strip_path: true
+            paths:
+              - /analytics/v1/
+      - name: meta
+        _comment: "pg-meta: /pg/* -> http://squadquest-supabase-supabase-meta:8080/*"
+        url: http://squadquest-supabase-supabase-meta:8080/
+        routes:
+          - name: meta-all
+            strip_path: true
+            paths:
+              - /pg/
+        plugins:
+          - name: key-auth
+            config:
+              hide_credentials: false
+          - name: acl
+            config:
+              hide_groups_header: true
+              allow:
+                - admin
+      - name: dashboard
+        _comment: 'Studio: /* -> http://squadquest-supabase-supabase-studio:3000/*'
+        url: http://squadquest-supabase-supabase-studio:3000/
+        routes:
+          - name: dashboard-all
+            strip_path: true
+            paths:
+              - /
+        plugins:
+          - name: cors
+          - name: basic-auth
+            config:
+              hide_credentials: true
+  wrapper.sh: |
+    #!/bin/bash
+
+    set -euo pipefail
+
+    echo "Replacing env placeholders of /usr/local/kong/kong.yml"
+
+    sed \
+    -e "s/\${SUPABASE_ANON_KEY}/${SUPABASE_ANON_KEY}/" \
+    -e "s/\${SUPABASE_SERVICE_KEY}/${SUPABASE_SERVICE_KEY}/" \
+    -e "s/\${DASHBOARD_USERNAME}/${DASHBOARD_USERNAME}/" \
+    -e "s/\${DASHBOARD_PASSWORD}/${DASHBOARD_PASSWORD}/" \
+    /usr/local/kong/template.yml \
+    > /usr/local/kong/kong.yml
+
+    exec /docker-entrypoint.sh kong docker-start
+kind: ConfigMap
+metadata:
+  labels:
+    app.kubernetes.io/instance: squadquest-supabase
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: supabase
+    helm.sh/chart: supabase-0.1.3
+  name: squadquest-supabase-supabase-kong
+  namespace: squadquest-supabase

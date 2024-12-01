@@ -1,0 +1,12 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: squadquest-supabase-view
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: squadquest-supabase-reader
+subjects:
+  - kind: ServiceAccount
+    name: squadquest-supabase-supabase-vector
+    namespace: squadquest-supabase

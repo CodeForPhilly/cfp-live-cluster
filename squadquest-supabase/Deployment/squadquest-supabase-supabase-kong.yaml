@@ -1,0 +1,92 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app.kubernetes.io/instance: squadquest-supabase
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: supabase
+    helm.sh/chart: supabase-0.1.3
+  name: squadquest-supabase-supabase-kong
+  namespace: squadquest-supabase
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/instance: squadquest-supabase
+      app.kubernetes.io/name: supabase-kong
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/instance: squadquest-supabase
+        app.kubernetes.io/name: supabase-kong
+    spec:
+      containers:
+        - args:
+            - /scripts/wrapper.sh
+          command:
+            - /bin/bash
+          env:
+            - name: KONG_DATABASE
+              value: 'off'
+            - name: KONG_DECLARATIVE_CONFIG
+              value: /usr/local/kong/kong.yml
+            - name: KONG_DNS_ORDER
+              value: 'LAST,A,CNAME'
+            - name: KONG_LOG_LEVEL
+              value: warn
+            - name: KONG_NGINX_PROXY_PROXY_BUFFERS
+              value: 64 160k
+            - name: KONG_NGINX_PROXY_PROXY_BUFFER_SIZE
+              value: 160k
+            - name: KONG_PLUGINS
+              value: 'request-transformer,cors,key-auth,acl,basic-auth'
+            - name: SUPABASE_ANON_KEY
+              valueFrom:
+                secretKeyRef:
+                  key: anonKey
+                  name: squadquest-supabase-jwt
+            - name: SUPABASE_SERVICE_KEY
+              valueFrom:
+                secretKeyRef:
+                  key: serviceKey
+                  name: squadquest-supabase-jwt
+            - name: DASHBOARD_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  key: username
+                  name: squadquest-supabase-dashboard
+            - name: DASHBOARD_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  key: password
+                  name: squadquest-supabase-dashboard
+          image: 'kong:2.8.5'
+          imagePullPolicy: IfNotPresent
+          name: supabase-kong
+          ports:
+            - containerPort: 8000
+              name: http
+              protocol: TCP
+          securityContext: {}
+          volumeMounts:
+            - mountPath: /usr/local/kong/template.yml
+              name: config
+              subPath: template.yml
+            - mountPath: /scripts
+              name: wrapper
+      securityContext: {}
+      serviceAccountName: squadquest-supabase-supabase-kong
+      volumes:
+        - configMap:
+            defaultMode: 511
+            items:
+              - key: template.yml
+                path: template.yml
+            name: squadquest-supabase-supabase-kong
+          name: config
+        - configMap:
+            defaultMode: 511
+            items:
+              - key: wrapper.sh
+                path: wrapper.sh
+            name: squadquest-supabase-supabase-kong
+          name: wrapper

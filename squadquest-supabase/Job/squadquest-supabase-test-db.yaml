@@ -1,0 +1,39 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  annotations:
+    helm.sh/hook: test
+  labels:
+    app.kubernetes.io/instance: squadquest-supabase
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: supabase
+    helm.sh/chart: supabase-0.1.3
+  name: squadquest-supabase-test-db
+  namespace: squadquest-supabase
+spec:
+  template:
+    spec:
+      containers:
+        - command:
+            - /bin/sh
+            - '-c'
+            - >
+              pg_isready -h $(DB_HOST) -p $(DB_PORT) -U $(DB_USER) || $(echo
+              "\e[0;31mFailed to connect to the database." && exit 1)
+
+              echo "Database is ready"
+          env:
+            - name: DB_HOST
+              value: squadquest-supabase-supabase-db
+            - name: DB_USER
+              valueFrom:
+                secretKeyRef:
+                  key: username
+                  name: squadquest-supabase-db
+            - name: DB_PORT
+              value: '5432'
+          image: 'postgres:15-alpine'
+          imagePullPolicy: IfNotPresent
+          name: test-db
+      restartPolicy: Never
+  ttlSecondsAfterFinished: 100

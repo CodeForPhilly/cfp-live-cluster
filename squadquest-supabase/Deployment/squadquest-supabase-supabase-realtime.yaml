@@ -1,0 +1,110 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app.kubernetes.io/instance: squadquest-supabase
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: supabase
+    helm.sh/chart: supabase-0.1.3
+  name: squadquest-supabase-supabase-realtime
+  namespace: squadquest-supabase
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/instance: squadquest-supabase
+      app.kubernetes.io/name: supabase-realtime
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/instance: squadquest-supabase
+        app.kubernetes.io/name: supabase-realtime
+    spec:
+      containers:
+        - args:
+            - '-c'
+            - >-
+              /app/bin/migrate && /app/bin/realtime eval
+              'Realtime.Release.seeds(Realtime.Repo)' && /app/bin/server
+          command:
+            - /bin/sh
+          env:
+            - name: DB_AFTER_CONNECT_QUERY
+              value: SET search_path TO _realtime
+            - name: DB_ENC_KEY
+              value: supabaserealtime
+            - name: DB_PORT
+              value: '5432'
+            - name: DB_SSL
+              value: disable
+            - name: DB_USER
+              value: supabase_admin
+            - name: DNS_NODES
+              value: ''''''
+            - name: ENABLE_TAILSCALE
+              value: 'false'
+            - name: ERL_AFLAGS
+              value: '-proto_dist inet_tcp'
+            - name: FLY_ALLOC_ID
+              value: fly123
+            - name: FLY_APP_NAME
+              value: realtime
+            - name: PORT
+              value: '4000'
+            - name: SECRET_KEY_BASE
+              value: UpNVntn3cDxHJpq99YMc1T1AQgQpc8kfYTuRgBiYa15BLrx8etQoXz3gZv1/u2oq
+            - name: DB_HOST
+              value: squadquest-supabase-supabase-db
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  key: password
+                  name: squadquest-supabase-db
+            - name: DB_NAME
+              valueFrom:
+                secretKeyRef:
+                  key: database
+                  name: squadquest-supabase-db
+            - name: JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  key: secret
+                  name: squadquest-supabase-jwt
+            - name: API_JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  key: secret
+                  name: squadquest-supabase-jwt
+          image: 'supabase/realtime:v2.33.61'
+          imagePullPolicy: IfNotPresent
+          name: supabase-realtime
+          ports:
+            - containerPort: 4000
+              name: http
+              protocol: TCP
+          securityContext: {}
+      initContainers:
+        - args:
+            - |
+              until pg_isready -h $(DB_HOST) -p $(DB_PORT) -U $(DB_USER); do
+              echo "Waiting for database to start..."
+              sleep 2
+              done
+            - echo "Database is ready"
+          command:
+            - /bin/sh
+            - '-c'
+          env:
+            - name: DB_HOST
+              value: squadquest-supabase-supabase-db
+            - name: DB_USER
+              valueFrom:
+                secretKeyRef:
+                  key: username
+                  name: squadquest-supabase-db
+            - name: DB_PORT
+              value: '5432'
+          image: 'postgres:15-alpine'
+          imagePullPolicy: IfNotPresent
+          name: init-db
+      securityContext: {}
+      serviceAccountName: squadquest-supabase-supabase-realtime

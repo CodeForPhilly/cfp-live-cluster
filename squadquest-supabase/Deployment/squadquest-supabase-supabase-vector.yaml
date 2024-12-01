@@ -1,0 +1,59 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app.kubernetes.io/instance: squadquest-supabase
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: supabase
+    helm.sh/chart: supabase-0.1.3
+    vector.dev/exclude: 'true'
+  name: squadquest-supabase-supabase-vector
+  namespace: squadquest-supabase
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/instance: squadquest-supabase
+      app.kubernetes.io/name: supabase-vector
+  template:
+    metadata:
+      annotations:
+        checksum/config: 20b44986c49cfc3dbead809f8feb8f84165ddcc90119143488e5bb764b392705
+      labels:
+        app.kubernetes.io/instance: squadquest-supabase
+        app.kubernetes.io/name: supabase-vector
+    spec:
+      containers:
+        - args:
+            - '--config'
+            - /etc/vector/vector.yml
+          env:
+            - name: VECTOR_SELF_NODE_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+            - name: LOGFLARE_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  key: apiKey
+                  name: squadquest-supabase-analytics
+          image: 'timberio/vector:0.42.X-alpine'
+          imagePullPolicy: IfNotPresent
+          name: supabase-vector
+          ports:
+            - containerPort: 9001
+              protocol: TCP
+          securityContext: {}
+          volumeMounts:
+            - mountPath: /etc/vector/vector.yml
+              name: vector-config
+              subPath: vector.yml
+            - mountPath: /etc/vector/secret.sh
+              name: vector-config
+              subPath: secret.sh
+      securityContext: {}
+      serviceAccountName: squadquest-supabase-supabase-vector
+      volumes:
+        - configMap:
+            defaultMode: 511
+            name: squadquest-supabase-supabase-vector-config
+          name: vector-config
