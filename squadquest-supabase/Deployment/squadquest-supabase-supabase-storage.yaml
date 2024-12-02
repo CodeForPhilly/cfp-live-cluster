@@ -55,17 +55,17 @@ spec:
               valueFrom:
                 secretKeyRef:
                   key: password
-                  name: squadquest-supabase-db
+                  name: postgres
             - name: DB_PASSWORD_ENC
               valueFrom:
                 secretKeyRef:
-                  key: password_encoded
-                  name: squadquest-supabase-db
+                  key: password
+                  name: postgres
             - name: DB_NAME
               valueFrom:
                 secretKeyRef:
                   key: database
-                  name: squadquest-supabase-db
+                  name: postgres
             - name: DATABASE_URL
               value: >-
                 $(DB_DRIVER)://$(DB_USER):$(DB_PASSWORD_ENC)@$(DB_HOST):$(DB_PORT)/$(DB_NAME)?search_path=auth&sslmode=$(DB_SSL)
@@ -73,21 +73,26 @@ spec:
               valueFrom:
                 secretKeyRef:
                   key: secret
-                  name: squadquest-supabase-jwt
+                  name: jwt
             - name: ANON_KEY
               valueFrom:
                 secretKeyRef:
                   key: anonKey
-                  name: squadquest-supabase-jwt
+                  name: jwt
             - name: SERVICE_KEY
               valueFrom:
                 secretKeyRef:
                   key: serviceKey
-                  name: squadquest-supabase-jwt
+                  name: jwt
             - name: IMGPROXY_URL
               value: 'http://squadquest-supabase-supabase-imgproxy:5001'
           image: 'supabase/storage-api:v1.13.3'
           imagePullPolicy: IfNotPresent
+          livenessProbe:
+            httpGet:
+              path: /status
+              port: 5000
+            initialDelaySeconds: 3
           name: supabase-storage
           ports:
             - containerPort: 5000
@@ -115,7 +120,7 @@ spec:
               valueFrom:
                 secretKeyRef:
                   key: username
-                  name: squadquest-supabase-db
+                  name: postgres
             - name: DB_PORT
               value: '5432'
           image: 'postgres:15-alpine'
@@ -125,6 +130,6 @@ spec:
       securityContext: {}
       serviceAccountName: squadquest-supabase-supabase-storage
       volumes:
-        - name: storage-data
-          persistentVolumeClaim:
-            claimName: squadquest-supabase-supabase-storage-pvc
+        - emptyDir:
+            medium: ''
+          name: storage-data

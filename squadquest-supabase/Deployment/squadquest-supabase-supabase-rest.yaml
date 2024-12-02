@@ -43,17 +43,17 @@ spec:
               valueFrom:
                 secretKeyRef:
                   key: password
-                  name: squadquest-supabase-db
+                  name: postgres
             - name: DB_PASSWORD_ENC
               valueFrom:
                 secretKeyRef:
-                  key: password_encoded
-                  name: squadquest-supabase-db
+                  key: password
+                  name: postgres
             - name: DB_NAME
               valueFrom:
                 secretKeyRef:
                   key: database
-                  name: squadquest-supabase-db
+                  name: postgres
             - name: PGRST_DB_URI
               value: >-
                 $(DB_DRIVER)://$(DB_USER):$(DB_PASSWORD_ENC)@$(DB_HOST):$(DB_PORT)/$(DB_NAME)?sslmode=$(DB_SSL)
@@ -61,12 +61,12 @@ spec:
               valueFrom:
                 secretKeyRef:
                   key: secret
-                  name: squadquest-supabase-jwt
+                  name: jwt
             - name: PGRST_APP_SETTINGS_JWT_SECRET
               valueFrom:
                 secretKeyRef:
                   key: secret
-                  name: squadquest-supabase-jwt
+                  name: jwt
           image: 'postgrest/postgrest:v12.2.3'
           imagePullPolicy: IfNotPresent
           name: supabase-rest

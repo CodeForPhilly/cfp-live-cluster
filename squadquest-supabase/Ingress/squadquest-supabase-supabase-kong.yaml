@@ -2,6 +2,7 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
     nginx.ingress.kubernetes.io/rewrite-target: /
   labels:
     app.kubernetes.io/instance: squadquest-supabase
@@ -13,7 +14,7 @@ metadata:
 spec:
   ingressClassName: nginx
   rules:
-    - host: example.com
+    - host: squadquest-supabase.live.k8s.phl.io
       http:
         paths:
           - backend:
@@ -23,3 +24,7 @@ spec:
                   number: 8000
             path: /
             pathType: Prefix
+  tls:
+    - hosts:
+        - squadquest-supabase.live.k8s.phl.io
+      secretName: squadquest-supabase-internal-tls

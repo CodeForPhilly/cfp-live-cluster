@@ -43,22 +43,22 @@ spec:
               valueFrom:
                 secretKeyRef:
                   key: password
-                  name: squadquest-supabase-db
+                  name: postgres
             - name: DB_PASSWORD_ENC
               valueFrom:
                 secretKeyRef:
-                  key: password_encoded
-                  name: squadquest-supabase-db
+                  key: password
+                  name: postgres
             - name: DB_DATABASE
               valueFrom:
                 secretKeyRef:
                   key: database
-                  name: squadquest-supabase-db
+                  name: postgres
             - name: LOGFLARE_API_KEY
               valueFrom:
                 secretKeyRef:
                   key: apiKey
-                  name: squadquest-supabase-analytics
+                  name: logflare
             - name: POSTGRES_BACKEND_URL
               value: >-
                 $(DB_DRIVER)://$(DB_USERNAME):$(DB_PASSWORD_ENC)@$(DB_HOSTNAME):$(DB_PORT)/$(DB_DATABASE)
@@ -68,6 +68,11 @@ spec:
               value: $(FEATURE_FLAG_OVERRIDE)
           image: 'supabase/logflare:1.10.0'
           imagePullPolicy: IfNotPresent
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 4000
+            initialDelaySeconds: 3
           name: supabase-analytics
           ports:
             - containerPort: 4000
@@ -91,7 +96,7 @@ spec:
               valueFrom:
                 secretKeyRef:
                   key: username
-                  name: squadquest-supabase-db
+                  name: postgres
             - name: DB_PORT
               value: '5432'
           image: 'postgres:15-alpine'

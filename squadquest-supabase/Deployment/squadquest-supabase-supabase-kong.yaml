@@ -43,22 +43,22 @@ spec:
               valueFrom:
                 secretKeyRef:
                   key: anonKey
-                  name: squadquest-supabase-jwt
+                  name: jwt
             - name: SUPABASE_SERVICE_KEY
               valueFrom:
                 secretKeyRef:
                   key: serviceKey
-                  name: squadquest-supabase-jwt
+                  name: jwt
             - name: DASHBOARD_USERNAME
               valueFrom:
                 secretKeyRef:
                   key: username
-                  name: squadquest-supabase-dashboard
+                  name: dashboard
             - name: DASHBOARD_PASSWORD
               valueFrom:
                 secretKeyRef:
                   key: password
-                  name: squadquest-supabase-dashboard
+                  name: dashboard
           image: 'kong:2.8.5'
           imagePullPolicy: IfNotPresent
           name: supabase-kong

@@ -41,12 +41,12 @@ spec:
               valueFrom:
                 secretKeyRef:
                   key: anonKey
-                  name: squadquest-supabase-jwt
+                  name: jwt
             - name: SUPABASE_SERVICE_KEY
               valueFrom:
                 secretKeyRef:
                   key: serviceKey
-                  name: squadquest-supabase-jwt
+                  name: jwt
             - name: LOGFLARE_URL
               value: 'http://squadquest-supabase-supabase-analytics:4000'
             - name: LOGFLARE_API_KEY

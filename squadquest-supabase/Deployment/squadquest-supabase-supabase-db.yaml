@@ -33,27 +33,27 @@ spec:
               valueFrom:
                 secretKeyRef:
                   key: username
-                  name: squadquest-supabase-db
+                  name: postgres
             - name: PGPASSWORD
               valueFrom:
                 secretKeyRef:
                   key: password
-                  name: squadquest-supabase-db
+                  name: postgres
             - name: POSTGRES_PASSWORD
               valueFrom:
                 secretKeyRef:
                   key: password
-                  name: squadquest-supabase-db
+                  name: postgres
             - name: PGDATABASE
               valueFrom:
                 secretKeyRef:
                   key: database
-                  name: squadquest-supabase-db
+                  name: postgres
             - name: POSTGRES_DB
               valueFrom:
                 secretKeyRef:
                   key: database
-                  name: squadquest-supabase-db
+                  name: postgres
           image: 'supabase/postgres:15.6.1.143'
           imagePullPolicy: IfNotPresent
           livenessProbe:

@@ -58,24 +58,29 @@ spec:
               valueFrom:
                 secretKeyRef:
                   key: password
-                  name: squadquest-supabase-db
+                  name: postgres
             - name: DB_NAME
               valueFrom:
                 secretKeyRef:
                   key: database
-                  name: squadquest-supabase-db
+                  name: postgres
             - name: JWT_SECRET
               valueFrom:
                 secretKeyRef:
                   key: secret
-                  name: squadquest-supabase-jwt
+                  name: jwt
             - name: API_JWT_SECRET
               valueFrom:
                 secretKeyRef:
                   key: secret
-                  name: squadquest-supabase-jwt
+                  name: jwt
           image: 'supabase/realtime:v2.33.61'
           imagePullPolicy: IfNotPresent
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 4000
+            initialDelaySeconds: 3
           name: supabase-realtime
           ports:
             - containerPort: 4000
@@ -100,7 +105,7 @@ spec:
               valueFrom:
                 secretKeyRef:
                   key: username
-                  name: squadquest-supabase-db
+                  name: postgres
             - name: DB_PORT
               value: '5432'
           image: 'postgres:15-alpine'

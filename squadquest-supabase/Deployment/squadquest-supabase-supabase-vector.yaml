@@ -35,15 +35,22 @@ spec:
               valueFrom:
                 secretKeyRef:
                   key: apiKey
-                  name: squadquest-supabase-analytics
+                  name: logflare
           image: 'timberio/vector:0.42.X-alpine'
           imagePullPolicy: IfNotPresent
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 9001
+            initialDelaySeconds: 3
           name: supabase-vector
           ports:
             - containerPort: 9001
               protocol: TCP
           securityContext: {}
           volumeMounts:
+            - mountPath: /var/log/pods
+              name: pod-logs
             - mountPath: /etc/vector/vector.yml
               name: vector-config
               subPath: vector.yml
@@ -53,6 +60,9 @@ spec:
       securityContext: {}
       serviceAccountName: squadquest-supabase-supabase-vector
       volumes:
+        - hostPath:
+            path: /var/log/pods
+          name: pod-logs
         - configMap:
             defaultMode: 511
             name: squadquest-supabase-supabase-vector-config

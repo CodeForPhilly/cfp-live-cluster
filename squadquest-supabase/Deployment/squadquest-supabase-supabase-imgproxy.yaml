@@ -31,6 +31,12 @@ spec:
               value: 'true'
           image: 'darthsim/imgproxy:v3'
           imagePullPolicy: IfNotPresent
+          livenessProbe:
+            exec:
+              command:
+                - imgproxy
+                - health
+            initialDelaySeconds: 3
           name: supabase-imgproxy
           ports:
             - containerPort: 8080

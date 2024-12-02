@@ -39,32 +39,32 @@ spec:
               valueFrom:
                 secretKeyRef:
                   key: password
-                  name: squadquest-supabase-db
+                  name: postgres
             - name: DB_PASSWORD_ENC
               valueFrom:
                 secretKeyRef:
-                  key: password_encoded
-                  name: squadquest-supabase-db
+                  key: password
+                  name: postgres
             - name: DB_DATABASE
               valueFrom:
                 secretKeyRef:
                   key: database
-                  name: squadquest-supabase-db
+                  name: postgres
             - name: JWT_SECRET
               valueFrom:
                 secretKeyRef:
                   key: secret
-                  name: squadquest-supabase-jwt
+                  name: jwt
             - name: SUPABASE_ANON_KEY
               valueFrom:
                 secretKeyRef:
                   key: anonKey
-                  name: squadquest-supabase-jwt
+                  name: jwt
             - name: SUPABASE_SERVICE_ROLE_KEY
               valueFrom:
                 secretKeyRef:
                   key: serviceKey
-                  name: squadquest-supabase-jwt
+                  name: jwt
             - name: POSTGRES_BACKEND_URL
               value: >-
                 $(DB_DRIVER)://$(DB_USERNAME):$(DB_PASSWORD_ENC)@$(DB_HOSTNAME):$(DB_PORT)/$(DB_DATABASE)?search_path=auth&sslmode=$(DB_SSL)

@@ -22,7 +22,7 @@ spec:
       containers:
         - env:
             - name: API_EXTERNAL_URL
-              value: 'http://example.com'
+              value: 'https://squadquest-supabase.live.k8s.phl.io'
             - name: DB_DRIVER
               value: postgres
             - name: DB_PORT
@@ -60,17 +60,17 @@ spec:
             - name: GOTRUE_MAILER_URLPATHS_RECOVERY
               value: /auth/v1/verify
             - name: GOTRUE_SITE_URL
-              value: 'http://example.com'
+              value: 'https://squadquest-supabase.live.k8s.phl.io'
             - name: GOTRUE_SMS_AUTOCONFIRM
               value: 'false'
             - name: GOTRUE_SMTP_ADMIN_EMAIL
-              value: SMTP_ADMIN_MAIL
+              value: admin@squadquest.app
             - name: GOTRUE_SMTP_HOST
-              value: SMTP_HOST
+              value: smtp.postmarkapp.com
             - name: GOTRUE_SMTP_PORT
-              value: SMTP_PORT
+              value: '587'
             - name: GOTRUE_SMTP_SENDER_NAME
-              value: SMTP_SENDER_NAME
+              value: auth@squadquest.app
             - name: GOTRUE_URI_ALLOW_LIST
               value: '*'
             - name: DB_HOST
@@ -79,17 +79,17 @@ spec:
               valueFrom:
                 secretKeyRef:
                   key: password
-                  name: squadquest-supabase-db
+                  name: postgres
             - name: DB_PASSWORD_ENC
               valueFrom:
                 secretKeyRef:
-                  key: password_encoded
-                  name: squadquest-supabase-db
+                  key: password
+                  name: postgres
             - name: DB_NAME
               valueFrom:
                 secretKeyRef:
                   key: database
-                  name: squadquest-supabase-db
+                  name: postgres
             - name: GOTRUE_DB_DATABASE_URL
               value: >-
                 $(DB_DRIVER)://$(DB_USER):$(DB_PASSWORD_ENC)@$(DB_HOST):$(DB_PORT)/$(DB_NAME)?search_path=auth&sslmode=$(DB_SSL)
@@ -99,17 +99,17 @@ spec:
               valueFrom:
                 secretKeyRef:
                   key: secret
-                  name: squadquest-supabase-jwt
+                  name: jwt
             - name: GOTRUE_SMTP_USER
               valueFrom:
                 secretKeyRef:
                   key: username
-                  name: squadquest-supabase-smtp
+                  name: postmark
             - name: GOTRUE_SMTP_PASS
               valueFrom:
                 secretKeyRef:
                   key: password
-                  name: squadquest-supabase-smtp
+                  name: postmark
           image: 'supabase/gotrue:v2.164.0'
           imagePullPolicy: IfNotPresent
           name: supabase-auth
@@ -136,7 +136,7 @@ spec:
               valueFrom:
                 secretKeyRef:
                   key: username
-                  name: squadquest-supabase-db
+                  name: postgres
             - name: DB_PORT
               value: '5432'
           image: 'postgres:15-alpine'
