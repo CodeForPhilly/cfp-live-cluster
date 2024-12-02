@@ -29,12 +29,12 @@ spec:
               valueFrom:
                 secretKeyRef:
                   key: username
-                  name: squadquest-supabase-dashboard
+                  name: dashboard
             - name: DASHBOARD_PASSWORD
               valueFrom:
                 secretKeyRef:
                   key: password
-                  name: squadquest-supabase-dashboard
+                  name: dashboard
           image: kdevup/curljq
           imagePullPolicy: IfNotPresent
           name: test-kong
