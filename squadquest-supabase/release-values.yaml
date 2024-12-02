@@ -91,6 +91,21 @@ imgproxy:
 kong:
   image:
     tag: 2.8.5
+  ingress:
+    enabled: true
+    className: "nginx"
+    annotations:
+      cert-manager.io/cluster-issuer: letsencrypt-prod
+      nginx.ingress.kubernetes.io/rewrite-target: /
+    tls:
+      - secretName: squadquest-supabase-internal-tls
+        hosts:
+          - squadquest-supabase.live.k8s.phl.io
+    hosts:
+      - host: squadquest-supabase.live.k8s.phl.io
+        paths:
+          - path: /
+            pathType: Prefix
 
 analytics:
   image:
