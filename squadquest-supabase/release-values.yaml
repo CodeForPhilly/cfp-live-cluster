@@ -64,6 +64,8 @@ storage:
       path: /status
       port: 5000
     initialDelaySeconds: 3
+  persistence:
+    enabled: false
 
 imgproxy:
   image:
@@ -96,6 +98,16 @@ vector:
       path: /health
       port: 9001
     initialDelaySeconds: 3
+  ## Vector requires logs from the control plane to function.
+  ## This is normally stored in /var/log/pods
+  ## Modify these values according to your environment.
+  volumeMounts:
+    - name: pod-logs
+      mountPath: /var/log/pods
+  volumes:
+    - name: pod-logs
+      hostPath:
+        path: /var/log/pods
 
 functions:
   image:
