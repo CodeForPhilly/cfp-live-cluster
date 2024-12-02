@@ -19,7 +19,9 @@ spec:
             - '-c'
             - |
               curl -sfo /dev/null \
-                http://squadquest-supabase-supabase-meta:8080/health
+                http://squadquest-supabase-supabase-meta:8080/health \
+                  || { echo -e "\033[31mFailed to connect to the squadquest-supabase-supabase-meta."; exit 1; }
+
               echo "Sevice squadquest-supabase-supabase-meta is healthy."
           image: kdevup/curljq
           imagePullPolicy: IfNotPresent

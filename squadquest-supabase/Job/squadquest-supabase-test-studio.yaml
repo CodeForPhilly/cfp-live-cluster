@@ -19,7 +19,9 @@ spec:
             - '-c'
             - |
               curl -sfo /dev/null \
-                http://squadquest-supabase-supabase-studio:3000/api/profile
+                http://squadquest-supabase-supabase-studio:3000/api/profile \
+                  || { echo -e "\033[31mFailed to connect to the squadquest-supabase-supabase-studio."; exit 1; }
+
               echo "Sevice squadquest-supabase-supabase-studio is healthy."
           image: kdevup/curljq
           imagePullPolicy: IfNotPresent
