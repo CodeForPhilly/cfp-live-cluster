@@ -1,0 +1,16 @@
+apiVersion: bitnami.com/v1alpha1
+kind: SealedSecret
+metadata:
+  creationTimestamp: null
+  name: logflare
+  namespace: squadquest-supabase
+spec:
+  encryptedData:
+    apiKey: >-
+      AgCHdNMjC+fLO9RbdoBO4fe0q13t3btreUbOJ8/mmEPtDbs4QjILom0QF3r+GSEYTO6Yaowrtnn77hyAO7qsXIIU3qoA4xs10FVByXZi5BcqI3TREGExZCId/M1OhY5mdsOWYcNkZNXqAgdln5k1FyODjm1zwmHwieCTAsiz2cDHmLhkD4MTF+dE542HJrrgxyG9dgl+PdqknbhzhfxFH675zP5A7wPMCncowYmbK4TQgm4/JqOs+xOiYizwh8En286RQPYcxePGm7uRKJj0sQ9VwwS4sdjAz2bzYKMrcdpckimUdZgZcAYpktmjhKEN6ixf/2piYCMOguIbs46q6Qs+o8mhtL9OGX9b2/fXPYNxcZh3BiDAPEiKgzT5PPq+8bOpBIAPvP9/BnI88dSD92Ahlv3s4kQGPOqI4u7iJCkG7ZYFqjVxA8AdwcDoGaZgmaciFlKxSHH4Aif3TsMN0UaM8thlmGukMKfAf04jYr9MhJdnSIMTCr9KaNqH5xTg7BYNrWVnv+HOi0gO9esoJPY6xiB5naoidp8Nm42A6G0DfSxlTsMPBrY25gLsH/D4GHxAK3OeMhGcK/o//YIBWVXTqlaz6z5sjuG6sR68LU/f2XHdcX8xlVbTjaMAQKX/saZcak8yIrk4gIfVZGiRr1JKlkYGpDvZwRZUawR2IzsqSvrg8nTM1OFR1KJWanbgfToelcp00Kjx0e6SHWcWsyzdwNKQf8St/LMkAMoMQyV+cA==
+  template:
+    metadata:
+      creationTimestamp: null
+      name: logflare
+      namespace: squadquest-supabase
+    type: Opaque

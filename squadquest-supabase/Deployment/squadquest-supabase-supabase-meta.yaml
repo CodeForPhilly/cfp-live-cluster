@@ -1,0 +1,67 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app.kubernetes.io/instance: squadquest-supabase
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: supabase
+    helm.sh/chart: supabase-0.1.3
+  name: squadquest-supabase-supabase-meta
+  namespace: squadquest-supabase
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/instance: squadquest-supabase
+      app.kubernetes.io/name: supabase-meta
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/instance: squadquest-supabase
+        app.kubernetes.io/name: supabase-meta
+    spec:
+      containers:
+        - env:
+            - name: DB_DRIVER
+              value: postgres
+            - name: DB_PORT
+              value: '5432'
+            - name: DB_SSL
+              value: disable
+            - name: DB_USER
+              value: supabase_admin
+            - name: PG_META_PORT
+              value: '8080'
+            - name: DB_HOST
+              value: squadquest-supabase-supabase-db
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  key: password
+                  name: postgres
+            - name: DB_NAME
+              valueFrom:
+                secretKeyRef:
+                  key: database
+                  name: postgres
+            - name: PG_META_DB_HOST
+              value: $(DB_HOST)
+            - name: PG_META_DB_PORT
+              value: $(DB_PORT)
+            - name: PG_META_DB_NAME
+              value: $(DB_NAME)
+            - name: PG_META_DB_USER
+              value: $(DB_USER)
+            - name: PG_META_DB_PASSWORD
+              value: $(DB_PASSWORD)
+            - name: PG_META_DB_SSL_MODE
+              value: $(DB_SSL)
+          image: 'supabase/postgres-meta:v0.84.3'
+          imagePullPolicy: IfNotPresent
+          name: supabase-meta
+          ports:
+            - containerPort: 8080
+              name: http
+              protocol: TCP
+          securityContext: {}
+      securityContext: {}
+      serviceAccountName: squadquest-supabase-supabase-meta

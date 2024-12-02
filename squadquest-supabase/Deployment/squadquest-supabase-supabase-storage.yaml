@@ -1,0 +1,135 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app.kubernetes.io/instance: squadquest-supabase
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: supabase
+    helm.sh/chart: supabase-0.1.3
+  name: squadquest-supabase-supabase-storage
+  namespace: squadquest-supabase
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/instance: squadquest-supabase
+      app.kubernetes.io/name: supabase-storage
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/instance: squadquest-supabase
+        app.kubernetes.io/name: supabase-storage
+    spec:
+      containers:
+        - env:
+            - name: DB_DRIVER
+              value: postgres
+            - name: DB_PORT
+              value: '5432'
+            - name: DB_SSL
+              value: disable
+            - name: DB_USER
+              value: supabase_storage_admin
+            - name: FILE_SIZE_LIMIT
+              value: '52428800'
+            - name: FILE_STORAGE_BACKEND_PATH
+              value: /var/lib/storage
+            - name: GLOBAL_S3_BUCKET
+              value: squadquest-supabase-storage
+            - name: GLOBAL_S3_ENDPOINT
+              value: us-east-1.linodeobjects.com
+            - name: GLOBAL_S3_PROTOCOL
+              value: https
+            - name: PGOPTIONS
+              value: '-c search_path=storage,public'
+            - name: REGION
+              value: stub
+            - name: STORAGE_BACKEND
+              value: s3
+            - name: TENANT_ID
+              value: stub
+            - name: DB_HOST
+              value: squadquest-supabase-supabase-db
+            - name: POSTGREST_URL
+              value: 'http://squadquest-supabase-supabase-rest:3000'
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  key: password
+                  name: postgres
+            - name: DB_PASSWORD_ENC
+              valueFrom:
+                secretKeyRef:
+                  key: password
+                  name: postgres
+            - name: DB_NAME
+              valueFrom:
+                secretKeyRef:
+                  key: database
+                  name: postgres
+            - name: DATABASE_URL
+              value: >-
+                $(DB_DRIVER)://$(DB_USER):$(DB_PASSWORD_ENC)@$(DB_HOST):$(DB_PORT)/$(DB_NAME)?search_path=auth&sslmode=$(DB_SSL)
+            - name: PGRST_JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  key: secret
+                  name: jwt
+            - name: ANON_KEY
+              valueFrom:
+                secretKeyRef:
+                  key: anonKey
+                  name: jwt
+            - name: SERVICE_KEY
+              valueFrom:
+                secretKeyRef:
+                  key: serviceKey
+                  name: jwt
+            - name: IMGPROXY_URL
+              value: 'http://squadquest-supabase-supabase-imgproxy:5001'
+          image: 'supabase/storage-api:v1.13.3'
+          imagePullPolicy: IfNotPresent
+          livenessProbe:
+            httpGet:
+              path: /status
+              port: 5000
+            initialDelaySeconds: 3
+          name: supabase-storage
+          ports:
+            - containerPort: 5000
+              name: http
+              protocol: TCP
+          securityContext: {}
+          volumeMounts:
+            - mountPath: /var/lib/storage
+              name: storage-data
+      initContainers:
+        - args:
+            - |
+              until pg_isready -h $(DB_HOST) -p $(DB_PORT) -U $(DB_USER); do
+              echo "Waiting for database to start..."
+              sleep 2
+              done
+            - echo "Database is ready"
+          command:
+            - /bin/sh
+            - '-c'
+          env:
+            - name: DB_HOST
+              value: squadquest-supabase-supabase-db
+            - name: DB_USER
+              valueFrom:
+                secretKeyRef:
+                  key: username
+                  name: postgres
+            - name: DB_PORT
+              value: '5432'
+          image: 'postgres:15-alpine'
+          imagePullPolicy: IfNotPresent
+          name: init-db
+      restartPolicy: Always
+      securityContext: {}
+      serviceAccountName: squadquest-supabase-supabase-storage
+      volumes:
+        - emptyDir:
+            medium: ''
+          name: storage-data

@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app.kubernetes.io/instance: squadquest-supabase
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: supabase
+    helm.sh/chart: supabase-0.1.3
+  name: squadquest-supabase-supabase-imgproxy
+  namespace: squadquest-supabase
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/instance: squadquest-supabase
+      app.kubernetes.io/name: supabase-imgproxy
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/instance: squadquest-supabase
+        app.kubernetes.io/name: supabase-imgproxy
+    spec:
+      containers:
+        - env:
+            - name: IMGPROXY_BIND
+              value: ':5001'
+            - name: IMGPROXY_ENABLE_WEBP_DETECTION
+              value: 'true'
+            - name: IMGPROXY_LOCAL_FILESYSTEM_ROOT
+              value: /
+            - name: IMGPROXY_USE_ETAG
+              value: 'true'
+          image: 'darthsim/imgproxy:v3'
+          imagePullPolicy: IfNotPresent
+          livenessProbe:
+            exec:
+              command:
+                - imgproxy
+                - health
+            initialDelaySeconds: 3
+          name: supabase-imgproxy
+          ports:
+            - containerPort: 8080
+              name: http
+              protocol: TCP
+          securityContext: {}
+          volumeMounts:
+            - mountPath: /var/lib/storage
+              name: imgproxy-volume
+      securityContext: {}
+      serviceAccountName: squadquest-supabase-supabase-imgproxy
+      volumes:
+        - name: imgproxy-volume
+          persistentVolumeClaim:
+            claimName: squadquest-supabase-supabase-imgproxy-pvc

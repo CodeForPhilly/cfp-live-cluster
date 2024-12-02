@@ -1,0 +1,28 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  annotations:
+    helm.sh/hook: test
+  labels:
+    app.kubernetes.io/instance: squadquest-supabase
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: supabase
+    helm.sh/chart: supabase-0.1.3
+  name: squadquest-supabase-test-rest
+  namespace: squadquest-supabase
+spec:
+  template:
+    spec:
+      containers:
+        - command:
+            - /bin/bash
+            - '-c'
+            - |
+              curl -sfo /dev/null \
+                http://squadquest-supabase-supabase-rest:3000
+              echo "Sevice squadquest-supabase-supabase-rest is healthy."
+          image: kdevup/curljq
+          imagePullPolicy: IfNotPresent
+          name: test-rest
+      restartPolicy: Never
+  ttlSecondsAfterFinished: 100

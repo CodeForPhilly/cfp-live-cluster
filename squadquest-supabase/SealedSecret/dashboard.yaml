@@ -1,0 +1,18 @@
+apiVersion: bitnami.com/v1alpha1
+kind: SealedSecret
+metadata:
+  creationTimestamp: null
+  name: dashboard
+  namespace: squadquest-supabase
+spec:
+  encryptedData:
+    password: >-
+      AgBzC3T0anZfXLw99/Wyeq3D4tJgX7JPzUGHXopfnEKJnZHIZ+gVeNIbvdAIzKSi7B5A9ZwDyErglLo6abKR4fsB2NUdHBjb+VsNNwS+ldg6mkZ9N8i+r7JSzJXsK7ctUFPNvgfZ8o5RepePfFhxBBY3l3sR+PrOYK+P0TBu2o5gFixWC+9mrv6npcrKQROVMC7Dg2+y9LB2+q/eHMSxpDeM7d5x2eeR0hs6Vwa4+GuAcPOkYpmbaMYK+bvaqV+doVr4/pQ608fo3sm32bbnXInkf2kfO/6QNRqTM/dLVg+neTxgEJL4ZTl8UgkX/cqGUFN4W9n+oV+OII+cRM8Wu1RwKJUTtvC8V8TuvsJJ8OLelpSu7w5WpB61GtaHZqU//fk/Dnf4UMWRT8Mfu+dkmhl4gusNaNnVi+tujAgf2zh/Z4ETFTN/ZQJrJ/dzlXoOcAm0FyF0BvjJSWLK10LuaIIi/eamLrHEGZA19CXqKeO3GpUjiCqe342RA43Nw9dsIbtvLSkUJi9ylTZ99Bv415h6HY4OS4ohS9LoKVZyhltukfnMH31iNcwa3EjtOkXO+zosTmlYPKod6j1BsvLq+0Kno8NSBV+9rlo6O8KtBk7nV+nrJtgeeu5d/4kp2AEbwxQGMSMPgNDpkDmrX/s2a7+HWi1Oe8SCpxzHH86dSwil8mhHcgBcVRRk272RzvSM5u8Ue7R4TPZDpwjC0sCgmDyLoBtX2Os5lw16u7w6v/UGEw==
+    username: >-
+      AgC1mVSU4R+TgcjnN8372+P702xKxZt1ITZFIlBPQrJrE7DruNIpRX2JwJhF6+LjVlmj1v7nrYvkjfUDGpYxmN9oBRMXuB+jWOeLW/LRqlSvOogsWJRHoGuxTg/B7JPJ7FFTmnGoeOj+DNjVcKoLa6tBtoAV2fuufloXSba9LEbixDOx9CXCDsBMdPFYJhBEav0eCPrLttDBTtstywJSRFfRDYZE49bVw9IM+aJpGQWhzigohLlLoeC/GUL9+y+najaxh8zciUDt2A7peYcJgKFihWpk9cPtkOXJnArAMIGu74WGW8q9rJjnWtZxcmNMSm6ttuKsi3cfKINgdMBapVX18G6XllMXYvnB9XRVYHdCtyRA7PYtY3csecxXqao+rzY1OelpZFpgDIbzde2HhC212rNi4BLoUo4rVdkiWgy/dHI88ujjIyPbw4R5XndQXOkx6+Npp31nM/UzB7EFo1c8S0s1yZlb42rLXyWoXeUmjLxtMTIG7RjIej1iz3n/lc0lYTF/tzxrO5ZbpvCL2MOmD/wVcbClz8js63Ttzc1DlZPzxFQrqurD10Vr2QDx0/Dd3l6QkqrWYWHVY6O2wj/rJwP//jN2NHUfhgoGmQXRo9j7QxkiV+FpoTOXMbzPLfxaL23UA/JrykghcW8SWT47ASH+d/eEkLDN7Vgi7ZFIywn1lqUh2NTPRQvspmG3xLsTLlgIAA==
+  template:
+    metadata:
+      creationTimestamp: null
+      name: dashboard
+      namespace: squadquest-supabase
+    type: Opaque

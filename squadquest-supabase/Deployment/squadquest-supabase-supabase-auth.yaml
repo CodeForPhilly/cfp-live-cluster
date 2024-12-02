@@ -1,0 +1,146 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app.kubernetes.io/instance: squadquest-supabase
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: supabase
+    helm.sh/chart: supabase-0.1.3
+  name: squadquest-supabase-supabase-auth
+  namespace: squadquest-supabase
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/instance: squadquest-supabase
+      app.kubernetes.io/name: supabase-auth
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/instance: squadquest-supabase
+        app.kubernetes.io/name: supabase-auth
+    spec:
+      containers:
+        - env:
+            - name: API_EXTERNAL_URL
+              value: 'https://squadquest-supabase.live.k8s.phl.io'
+            - name: DB_DRIVER
+              value: postgres
+            - name: DB_PORT
+              value: '5432'
+            - name: DB_SSL
+              value: disable
+            - name: DB_USER
+              value: supabase_auth_admin
+            - name: GOTRUE_API_HOST
+              value: 0.0.0.0
+            - name: GOTRUE_API_PORT
+              value: '9999'
+            - name: GOTRUE_DISABLE_SIGNUP
+              value: 'false'
+            - name: GOTRUE_EXTERNAL_EMAIL_ENABLED
+              value: 'true'
+            - name: GOTRUE_EXTERNAL_PHONE_ENABLED
+              value: 'false'
+            - name: GOTRUE_JWT_ADMIN_ROLES
+              value: service_role
+            - name: GOTRUE_JWT_AUD
+              value: authenticated
+            - name: GOTRUE_JWT_DEFAULT_GROUP_NAME
+              value: authenticated
+            - name: GOTRUE_JWT_EXP
+              value: '3600'
+            - name: GOTRUE_MAILER_AUTOCONFIRM
+              value: 'true'
+            - name: GOTRUE_MAILER_URLPATHS_CONFIRMATION
+              value: /auth/v1/verify
+            - name: GOTRUE_MAILER_URLPATHS_EMAIL_CHANGE
+              value: /auth/v1/verify
+            - name: GOTRUE_MAILER_URLPATHS_INVITE
+              value: /auth/v1/verify
+            - name: GOTRUE_MAILER_URLPATHS_RECOVERY
+              value: /auth/v1/verify
+            - name: GOTRUE_SITE_URL
+              value: 'https://squadquest-supabase.live.k8s.phl.io'
+            - name: GOTRUE_SMS_AUTOCONFIRM
+              value: 'false'
+            - name: GOTRUE_SMTP_ADMIN_EMAIL
+              value: admin@squadquest.app
+            - name: GOTRUE_SMTP_HOST
+              value: smtp.postmarkapp.com
+            - name: GOTRUE_SMTP_PORT
+              value: '587'
+            - name: GOTRUE_SMTP_SENDER_NAME
+              value: auth@squadquest.app
+            - name: GOTRUE_URI_ALLOW_LIST
+              value: '*'
+            - name: DB_HOST
+              value: squadquest-supabase-supabase-db
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  key: password
+                  name: postgres
+            - name: DB_PASSWORD_ENC
+              valueFrom:
+                secretKeyRef:
+                  key: password
+                  name: postgres
+            - name: DB_NAME
+              valueFrom:
+                secretKeyRef:
+                  key: database
+                  name: postgres
+            - name: GOTRUE_DB_DATABASE_URL
+              value: >-
+                $(DB_DRIVER)://$(DB_USER):$(DB_PASSWORD_ENC)@$(DB_HOST):$(DB_PORT)/$(DB_NAME)?search_path=auth&sslmode=$(DB_SSL)
+            - name: GOTRUE_DB_DRIVER
+              value: $(DB_DRIVER)
+            - name: GOTRUE_JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  key: secret
+                  name: jwt
+            - name: GOTRUE_SMTP_USER
+              valueFrom:
+                secretKeyRef:
+                  key: username
+                  name: postmark
+            - name: GOTRUE_SMTP_PASS
+              valueFrom:
+                secretKeyRef:
+                  key: password
+                  name: postmark
+          image: 'supabase/gotrue:v2.164.0'
+          imagePullPolicy: IfNotPresent
+          name: supabase-auth
+          ports:
+            - containerPort: 9999
+              name: http
+              protocol: TCP
+          securityContext: {}
+      initContainers:
+        - args:
+            - |
+              until pg_isready -h $(DB_HOST) -p $(DB_PORT) -U $(DB_USER); do
+              echo "Waiting for database to start..."
+              sleep 2
+              done
+            - echo "Database is ready"
+          command:
+            - /bin/sh
+            - '-c'
+          env:
+            - name: DB_HOST
+              value: squadquest-supabase-supabase-db
+            - name: DB_USER
+              valueFrom:
+                secretKeyRef:
+                  key: username
+                  name: postgres
+            - name: DB_PORT
+              value: '5432'
+          image: 'postgres:15-alpine'
+          imagePullPolicy: IfNotPresent
+          name: init-db
+      securityContext: {}
+      serviceAccountName: squadquest-supabase-supabase-auth

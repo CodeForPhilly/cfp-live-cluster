@@ -1,0 +1,83 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app.kubernetes.io/instance: squadquest-supabase
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: supabase
+    helm.sh/chart: supabase-0.1.3
+  name: squadquest-supabase-supabase-functions
+  namespace: squadquest-supabase
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/instance: squadquest-supabase
+      app.kubernetes.io/name: supabase-functions
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/instance: squadquest-supabase
+        app.kubernetes.io/name: supabase-functions
+    spec:
+      containers:
+        - args:
+            - start
+            - '--main-service'
+            - /home/deno/functions/main
+          env:
+            - name: DB_DRIVER
+              value: postgresql
+            - name: DB_PORT
+              value: '5432'
+            - name: DB_SSL
+              value: disable
+            - name: DB_USERNAME
+              value: supabase_functions_admin
+            - name: DB_HOSTNAME
+              value: squadquest-supabase-supabase-db
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  key: password
+                  name: postgres
+            - name: DB_PASSWORD_ENC
+              valueFrom:
+                secretKeyRef:
+                  key: password
+                  name: postgres
+            - name: DB_DATABASE
+              valueFrom:
+                secretKeyRef:
+                  key: database
+                  name: postgres
+            - name: JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  key: secret
+                  name: jwt
+            - name: SUPABASE_ANON_KEY
+              valueFrom:
+                secretKeyRef:
+                  key: anonKey
+                  name: jwt
+            - name: SUPABASE_SERVICE_ROLE_KEY
+              valueFrom:
+                secretKeyRef:
+                  key: serviceKey
+                  name: jwt
+            - name: POSTGRES_BACKEND_URL
+              value: >-
+                $(DB_DRIVER)://$(DB_USERNAME):$(DB_PASSWORD_ENC)@$(DB_HOSTNAME):$(DB_PORT)/$(DB_DATABASE)?search_path=auth&sslmode=$(DB_SSL)
+          image: 'supabase/edge-runtime:v1.65.3'
+          imagePullPolicy: IfNotPresent
+          name: supabase-functions
+          securityContext: {}
+          volumeMounts:
+            - mountPath: /home/deno/functions/main
+              name: functions-main
+      securityContext: {}
+      serviceAccountName: squadquest-supabase-supabase-functions
+      volumes:
+        - configMap:
+            name: squadquest-supabase-supabase-functions-main
+          name: functions-main

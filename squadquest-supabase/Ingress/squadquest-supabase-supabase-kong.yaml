@@ -1,0 +1,30 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    nginx.ingress.kubernetes.io/rewrite-target: /
+  labels:
+    app.kubernetes.io/instance: squadquest-supabase
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: supabase
+    helm.sh/chart: supabase-0.1.3
+  name: squadquest-supabase-supabase-kong
+  namespace: squadquest-supabase
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: squadquest-supabase.live.k8s.phl.io
+      http:
+        paths:
+          - backend:
+              service:
+                name: squadquest-supabase-supabase-kong
+                port:
+                  number: 8000
+            path: /
+            pathType: Prefix
+  tls:
+    - hosts:
+        - squadquest-supabase.live.k8s.phl.io
+      secretName: squadquest-supabase-internal-tls
