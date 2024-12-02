@@ -33,6 +33,15 @@ studio:
 auth:
   image:
     tag: v2.164.0
+  environment:
+    API_EXTERNAL_URL: https://squadquest-supabase.live.k8s.phl.io
+    GOTRUE_SITE_URL: https://squadquest-supabase.live.k8s.phl.io
+    GOTRUE_EXTERNAL_EMAIL_ENABLED: "true"
+    GOTRUE_SMTP_ADMIN_EMAIL: "admin@squadquest.app"
+    GOTRUE_SMTP_HOST: "smtp.postmarkapp.com"
+    GOTRUE_SMTP_PORT: "587"
+    GOTRUE_SMTP_SENDER_NAME: "auth@squadquest.app"
+
 
 rest:
   image:
@@ -70,6 +79,8 @@ storage:
 imgproxy:
   image:
     tag: v3
+  environment:
+    IMGPROXY_ENABLE_WEBP_DETECTION: "true"
   livenessProbe:
     exec:
       command:
