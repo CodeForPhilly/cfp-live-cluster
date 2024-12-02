@@ -20,7 +20,7 @@ spec:
             - |
               curl -sfo /dev/null \
                 http://squadquest-supabase-supabase-imgproxy:5001/health \
-                  || { echo -e "\033[31mFailed to connect to the squadquest-supabase-supabase-imgproxy."; exit 1; }
+                  || { echo -e "\033[31mFailed to connect to the squadquest-supabase-supabase-imgproxy.\033[0m"; exit 1; }
 
               echo "Sevice squadquest-supabase-supabase-imgproxy is healthy."
           image: kdevup/curljq
