@@ -22,7 +22,8 @@ spec:
               curl -sL --fail \
                 -o /dev/null \
                 "http://${DASHBOARD_USERNAME}:${DASHBOARD_PASSWORD}@squadquest-supabase-supabase-kong:8000" \
-                || ( echo -e "\e[0;31mFailed to get a valid response." && exit 1 )
+                  || { echo -e "\033[31mFailed to connect to the squadquest-supabase-supabase-kong."; exit 1; }
+
               echo "Successfully connected."
           env:
             - name: DASHBOARD_USERNAME
