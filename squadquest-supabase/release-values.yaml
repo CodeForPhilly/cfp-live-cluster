@@ -41,6 +41,11 @@ rest:
 realtime:
   image:
     tag: v2.33.61
+  livenessProbe:
+    httpGet:
+      path: /
+      port: 4000
+    initialDelaySeconds: 3
 
 meta:
   image:
@@ -54,10 +59,21 @@ storage:
     GLOBAL_S3_BUCKET: squadquest-supabase-storage
     GLOBAL_S3_ENDPOINT: us-east-1.linodeobjects.com
     GLOBAL_S3_PROTOCOL: https
+  livenessProbe:
+    httpGet:
+      path: /status
+      port: 5000
+    initialDelaySeconds: 3
 
 imgproxy:
   image:
     tag: v3
+  livenessProbe:
+    exec:
+      command:
+        - imgproxy
+        - health
+    initialDelaySeconds: 3
 
 kong:
   image:
@@ -66,10 +82,20 @@ kong:
 analytics:
   image:
     tag: 1.10.0
+  livenessProbe:
+    httpGet:
+      path: /health
+      port: 4000
+    initialDelaySeconds: 3
 
 vector:
   image:
     tag: 0.42.X-alpine
+  livenessProbe:
+    httpGet:
+      path: /health
+      port: 9001
+    initialDelaySeconds: 3
 
 functions:
   image:
