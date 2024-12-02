@@ -20,7 +20,7 @@ spec:
             - |
               curl -sfo /dev/null \
                 http://squadquest-supabase-supabase-storage:5000/status \
-                  || { echo -e "\033[31mFailed to connect to the squadquest-supabase-supabase-storage."; exit 1; }
+                  || { echo -e "\033[31mFailed to connect to the squadquest-supabase-supabase-storage.\033[0m"; exit 1; }
 
               echo "Sevice squadquest-supabase-supabase-storage is healthy."
           image: kdevup/curljq

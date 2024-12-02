@@ -20,7 +20,7 @@ spec:
             - |
               curl -sfo /dev/null \
                 http://squadquest-supabase-supabase-studio:3000/api/profile \
-                  || { echo -e "\033[31mFailed to connect to the squadquest-supabase-supabase-studio."; exit 1; }
+                  || { echo -e "\033[31mFailed to connect to the squadquest-supabase-supabase-studio.\033[0m"; exit 1; }
 
               echo "Sevice squadquest-supabase-supabase-studio is healthy."
           image: kdevup/curljq
