@@ -53,7 +53,7 @@ spec:
               valueFrom:
                 secretKeyRef:
                   key: apiKey
-                  name: squadquest-supabase-analytics
+                  name: logflare
           image: 'supabase/studio:20241111-d7c6eb1'
           imagePullPolicy: IfNotPresent
           name: supabase-studio
