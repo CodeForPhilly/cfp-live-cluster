@@ -1,6 +1,16 @@
 # See: https://github.com/supabase-community/supabase-kubernetes/blob/main/charts/supabase/values.yaml
 
 secret:
+  jwt:
+    secretRef: jwt
+  smtp:
+    secretRef: postmark
+  dashboard:
+    secretRef: dashboard
+  db:
+    secretRef: postgres
+  analytics:
+    secretRef: logflare
   s3:
     secretRef: linode-storage
 
