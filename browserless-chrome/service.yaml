@@ -1,0 +1,13 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: browserless-chrome
+  namespace: browserless-chrome
+spec:
+  ports:
+    - name: http
+      protocol: TCP
+      port: 80
+      targetPort: http
+  selector:
+    app: browserless-chrome

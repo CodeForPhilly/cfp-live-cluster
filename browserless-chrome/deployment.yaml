@@ -1,0 +1,22 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: browserless-chrome
+  namespace: browserless-chrome
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: browserless-chrome
+  template:
+    metadata:
+      labels:
+        app: browserless-chrome
+    spec:
+      containers:
+        - name: browserless-chrome
+          image: browserless/chrome
+          ports:
+            - name: http
+              containerPort: 3000
+              protocol: TCP
