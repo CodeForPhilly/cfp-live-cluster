@@ -5,9 +5,9 @@ metadata:
     app.kubernetes.io/instance: vaultwarden
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: vaultwarden
-    app.kubernetes.io/version: 1.23.0
+    app.kubernetes.io/version: 1.32.7
     component: postgresql
-    helm.sh/chart: vaultwarden-0.5.1
+    helm.sh/chart: vaultwarden-1.2.5
   name: vaultwarden-postgresql
   namespace: vaultwarden
 spec:

@@ -5,12 +5,13 @@ metadata:
     app.kubernetes.io/instance: vaultwarden
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: vaultwarden
-    app.kubernetes.io/version: 1.23.0
-    helm.sh/chart: vaultwarden-0.5.1
+    app.kubernetes.io/version: 1.32.7
+    helm.sh/chart: vaultwarden-1.2.5
   name: vaultwarden
   namespace: vaultwarden
 spec:
   replicas: 1
+  revisionHistoryLimit: 10
   selector:
     matchLabels:
       app.kubernetes.io/instance: vaultwarden
@@ -23,6 +24,7 @@ spec:
         app.kubernetes.io/instance: vaultwarden
         app.kubernetes.io/name: vaultwarden
     spec:
+      automountServiceAccountToken: false
       containers:
         - env:
             - name: ROCKET_PORT
@@ -37,8 +39,6 @@ spec:
               value: 'true'
             - name: SHOW_PASSWORD_HINT
               value: 'false'
-            - name: WEBSOCKET_ENABLED
-              value: 'true'
             - name: WEB_VAULT_ENABLED
               value: 'true'
             - name: SENDS_ALLOWED
@@ -65,8 +65,8 @@ spec:
               value: smtp.postmarkapp.com
             - name: SMTP_FROM
               value: support@codeforphilly.org
-            - name: SMTP_SSL
-              value: 'true'
+            - name: SMTP_SECURITY
+              value: starttls
             - name: SMTP_USERNAME
               valueFrom:
                 secretKeyRef:
@@ -77,7 +77,7 @@ spec:
                 secretKeyRef:
                   key: smtp-password
                   name: smtp-postmark
-          image: 'vaultwarden/server:1.27.0'
+          image: 'vaultwarden/server:1.33.2'
           imagePullPolicy: IfNotPresent
           livenessProbe:
             httpGet:
@@ -87,9 +87,6 @@ spec:
           ports:
             - containerPort: 8080
               name: http
-              protocol: TCP
-            - containerPort: 3012
-              name: websocket
               protocol: TCP
           readinessProbe:
             httpGet:
