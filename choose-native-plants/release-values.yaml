@@ -50,14 +50,22 @@ app:
 # Resource settings for the application
 resources:
   limits:
-    memory: 4Gi
-  requests:
     memory: 1Gi
+  requests:
+    memory: 512Mi
 
 # Use existing resources instead of creating new ones
 existingPVCs:
   appImages: "choose-native-plants-app-images-v2"
   mongoData: "choose-native-plants-mongo-data"
+
+# Horizontal Pod Autoscaling configuration
+autoscaling:
+  enabled: true
+  minReplicas: 1
+  maxReplicas: 3
+  targetCPUUtilizationPercentage: 80
+  targetMemoryUtilizationPercentage: 80
 
 # Use existing service and ingress
 existingService: false
