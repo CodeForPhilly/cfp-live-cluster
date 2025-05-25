@@ -241,7 +241,7 @@ spec:
       volumes:
         - name: choose-native-plants-app-images
           persistentVolumeClaim:
-            claimName: choose-native-plants-app-images-v2
+            claimName: choose-native-plants-app-images
         - name: choose-native-plants-mongo-data
           persistentVolumeClaim:
             claimName: choose-native-plants-mongo-data
