@@ -2,23 +2,20 @@ apiVersion: v1
 kind: Namespace
 metadata:
   name: choose-native-plants
-
 ---
-
 apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: deployment-admin
   namespace: choose-native-plants
-
 ---
-
 kind: Role
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: deployment-admin
   namespace: choose-native-plants
 rules:
+# Chris's original permissions (unchanged)
 - apiGroups: [""]
   resources: ["pods"]
   verbs: ["get", "watch", "list", "delete"]
@@ -28,9 +25,32 @@ rules:
 - apiGroups: [""]
   resources: ["pods/log"]
   verbs: ["get"]
-
+# Additional read-only permissions for troubleshooting (Zach's need to troubleshoot prod)
+- apiGroups: [""]
+  resources: ["events"]
+  verbs: ["get", "list", "watch"]
+- apiGroups: ["apps", "extensions"]
+  resources: ["deployments", "replicasets", "statefulsets"]
+  verbs: ["get", "list", "watch"]
+- apiGroups: [""]
+  resources: ["configmaps", "persistentvolumeclaims", "services"]
+  verbs: ["get", "list", "watch"]
+- apiGroups: ["networking.k8s.io"]
+  resources: ["ingresses"]
+  verbs: ["get", "list", "watch"]
+- apiGroups: [""]
+  resources: ["endpoints", "serviceaccounts"]
+  verbs: ["get", "list", "watch"]
+- apiGroups: ["networking.k8s.io"]
+  resources: ["networkpolicies"]
+  verbs: ["get", "list", "watch"]
+- apiGroups: ["batch"]
+  resources: ["jobs", "cronjobs"]
+  verbs: ["get", "list", "watch"]
+- apiGroups: ["rbac.authorization.k8s.io"]
+  resources: ["roles", "rolebindings"]
+  verbs: ["get", "list", "watch"]
 ---
-
 kind: RoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
