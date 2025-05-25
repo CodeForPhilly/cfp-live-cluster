@@ -54,10 +54,8 @@ resources:
   requests:
     memory: 512Mi
 
-# Use existing resources instead of creating new ones
-existingPVCs:
-  appImages: "choose-native-plants-app-images"
-  mongoData: "choose-native-plants-mongo-data"
+# Allow the Helm chart to create PVCs automatically
+# (removed existingPVCs configuration)
 
 # Horizontal Pod Autoscaling configuration
 autoscaling:
@@ -67,9 +65,8 @@ autoscaling:
   targetCPUUtilizationPercentage: 80
   targetMemoryUtilizationPercentage: 80
 
-# Use existing service and ingress
-existingService: false
-existingIngress: false
+# Allow the Helm chart to create Service and Ingress resources automatically
+# (removed existingService and existingIngress configuration)
 
 ingress:
   enabled: true
