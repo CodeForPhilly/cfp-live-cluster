@@ -56,7 +56,7 @@ resources:
 
 # Use existing resources instead of creating new ones
 existingPVCs:
-  appImages: "choose-native-plants-app-images-v2"
+  appImages: "choose-native-plants-app-images"
   mongoData: "choose-native-plants-mongo-data"
 
 # Horizontal Pod Autoscaling configuration
