@@ -1,6 +1,6 @@
 app:
   image:
-    tag: "2.0.5"
+    tag: "2.0.6"
   # IMPORTANT: Only include environment variables here that are NOT already defined in the Helm chart template
   # The following environment variables are already defined in the template and should NOT be duplicated here:
   # - PAC_API_BASE_URL, PAC_API_KEY (from pac-api secret)
@@ -9,6 +9,15 @@ app:
   env:
     - name: NODE_OPTIONS
       value: "--openssl-legacy-provider --max-old-space-size=768"
+  envFrom:
+    - secretRef:
+        name: app
+    - secretRef:
+        name: mongo
+    - secretRef:
+        name: pac-api
+    - secretRef:
+        name: linode-storage
 
 # Resource settings for the application
 resources:
