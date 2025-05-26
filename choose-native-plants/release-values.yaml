@@ -1,51 +1,23 @@
 app:
   image:
-    tag: "2.0.4"
+    tag: "2.0.6"
+  # IMPORTANT: Only include environment variables here that are NOT already defined in the Helm chart template
+  # The following environment variables are already defined in the template and should NOT be duplicated here:
+  # - PAC_API_BASE_URL, PAC_API_KEY (from pac-api secret)
+  # - AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_DEFAULT_REGION, LINODE_BUCKET_NAME, LINODE_ENDPOINT_URL (from linode-storage secret)
+  # Duplicating these variables causes patch errors in the GitOps deployment process
   env:
-    - name: PAC_API_BASE_URL
-      valueFrom:
-        secretKeyRef:
-          name: pac-api
-          key: PAC_API_BASE_URL
-          optional: false
-    - name: PAC_API_KEY
-      valueFrom:
-        secretKeyRef:
-          name: pac-api
-          key: PAC_API_KEY
-          optional: false
-    - name: AWS_ACCESS_KEY_ID
-      valueFrom:
-        secretKeyRef:
-          name: linode-storage
-          key: AWS_ACCESS_KEY_ID
-          optional: false
-    - name: AWS_SECRET_ACCESS_KEY
-      valueFrom:
-        secretKeyRef:
-          name: linode-storage
-          key: AWS_SECRET_ACCESS_KEY
-          optional: false
-    - name: AWS_DEFAULT_REGION
-      valueFrom:
-        secretKeyRef:
-          name: linode-storage
-          key: AWS_DEFAULT_REGION
-          optional: false
-    - name: LINODE_BUCKET_NAME
-      valueFrom:
-        secretKeyRef:
-          name: linode-storage
-          key: LINODE_BUCKET_NAME
-          optional: false
-    - name: LINODE_ENDPOINT_URL
-      valueFrom:
-        secretKeyRef:
-          name: linode-storage
-          key: LINODE_ENDPOINT_URL
-          optional: false
     - name: NODE_OPTIONS
       value: "--openssl-legacy-provider --max-old-space-size=768"
+  envFrom:
+    - secretRef:
+        name: app
+    - secretRef:
+        name: mongo
+    - secretRef:
+        name: pac-api
+    - secretRef:
+        name: linode-storage
 
 # Resource settings for the application
 resources:
@@ -54,9 +26,6 @@ resources:
   requests:
     memory: 512Mi
 
-# Allow the Helm chart to create PVCs automatically
-# (removed existingPVCs configuration)
-
 # Horizontal Pod Autoscaling configuration
 autoscaling:
   enabled: true
@@ -64,9 +33,6 @@ autoscaling:
   maxReplicas: 3
   targetCPUUtilizationPercentage: 80
   targetMemoryUtilizationPercentage: 80
-
-# Allow the Helm chart to create Service and Ingress resources automatically
-# (removed existingService and existingIngress configuration)
 
 ingress:
   enabled: true
