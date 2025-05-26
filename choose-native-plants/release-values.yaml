@@ -26,8 +26,6 @@ resources:
   requests:
     memory: 512Mi
 
-# Allow the Helm chart to create PVCs automatically
-
 # Horizontal Pod Autoscaling configuration
 autoscaling:
   enabled: true
@@ -35,8 +33,6 @@ autoscaling:
   maxReplicas: 3
   targetCPUUtilizationPercentage: 80
   targetMemoryUtilizationPercentage: 80
-
-# Allow the Helm chart to create Service and Ingress resources automatically
 
 ingress:
   enabled: true
