@@ -32,11 +32,11 @@ spec:
             - name: STUDIO_PORT
               value: '3000'
             - name: SUPABASE_PUBLIC_URL
-              value: 'http://example.com'
+              value: http://example.com
             - name: SUPABASE_URL
-              value: 'http://squadquest-supabase-supabase-kong:8000'
+              value: http://squadquest-supabase-supabase-kong:8000
             - name: STUDIO_PG_META_URL
-              value: 'http://squadquest-supabase-supabase-meta:8080'
+              value: http://squadquest-supabase-supabase-meta:8080
             - name: SUPABASE_ANON_KEY
               valueFrom:
                 secretKeyRef:
@@ -48,13 +48,13 @@ spec:
                   key: serviceKey
                   name: jwt
             - name: LOGFLARE_URL
-              value: 'http://squadquest-supabase-supabase-analytics:4000'
+              value: http://squadquest-supabase-supabase-analytics:4000
             - name: LOGFLARE_API_KEY
               valueFrom:
                 secretKeyRef:
                   key: apiKey
                   name: logflare
-          image: 'supabase/studio:20241111-d7c6eb1'
+          image: supabase/studio:20241111-d7c6eb1
           imagePullPolicy: IfNotPresent
           name: supabase-studio
           ports:

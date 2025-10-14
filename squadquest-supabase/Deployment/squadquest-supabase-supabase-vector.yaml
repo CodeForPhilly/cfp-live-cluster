@@ -36,7 +36,7 @@ spec:
                 secretKeyRef:
                   key: apiKey
                   name: logflare
-          image: 'timberio/vector:0.42.X-alpine'
+          image: timberio/vector:0.42.X-alpine
           imagePullPolicy: IfNotPresent
           livenessProbe:
             httpGet:
@@ -64,6 +64,6 @@ spec:
             path: /var/log/pods
           name: pod-logs
         - configMap:
-            defaultMode: 511
+            defaultMode: 777
             name: squadquest-supabase-supabase-vector-config
           name: vector-config

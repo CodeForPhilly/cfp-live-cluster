@@ -29,7 +29,7 @@ spec:
               value: /
             - name: IMGPROXY_USE_ETAG
               value: 'true'
-          image: 'darthsim/imgproxy:v3'
+          image: darthsim/imgproxy:v3
           imagePullPolicy: IfNotPresent
           livenessProbe:
             exec:

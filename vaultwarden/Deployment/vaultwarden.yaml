@@ -53,7 +53,7 @@ spec:
                   key: database-url
                   name: database-url
             - name: DOMAIN
-              value: 'https://vaultwarden.phl.io'
+              value: https://vaultwarden.phl.io
             - name: ADMIN_TOKEN
               valueFrom:
                 secretKeyRef:
@@ -77,7 +77,7 @@ spec:
                 secretKeyRef:
                   key: smtp-password
                   name: smtp-postmark
-          image: 'vaultwarden/server:1.33.2'
+          image: vaultwarden/server:1.33.2
           imagePullPolicy: IfNotPresent
           livenessProbe:
             httpGet:

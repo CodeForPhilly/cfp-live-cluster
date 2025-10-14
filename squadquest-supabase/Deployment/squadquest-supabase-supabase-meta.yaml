@@ -55,7 +55,7 @@ spec:
               value: $(DB_PASSWORD)
             - name: PG_META_DB_SSL_MODE
               value: $(DB_SSL)
-          image: 'supabase/postgres-meta:v0.84.3'
+          image: supabase/postgres-meta:v0.84.3
           imagePullPolicy: IfNotPresent
           name: supabase-meta
           ports:

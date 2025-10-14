@@ -32,7 +32,7 @@ spec:
                   name: postgres
             - name: DB_PORT
               value: '5432'
-          image: 'postgres:15-alpine'
+          image: postgres:15-alpine
           imagePullPolicy: IfNotPresent
           name: test-db
       restartPolicy: Never
