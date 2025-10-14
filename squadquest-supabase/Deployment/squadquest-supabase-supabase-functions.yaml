@@ -68,7 +68,7 @@ spec:
             - name: POSTGRES_BACKEND_URL
               value: >-
                 $(DB_DRIVER)://$(DB_USERNAME):$(DB_PASSWORD_ENC)@$(DB_HOSTNAME):$(DB_PORT)/$(DB_DATABASE)?search_path=auth&sslmode=$(DB_SSL)
-          image: 'supabase/edge-runtime:v1.65.3'
+          image: supabase/edge-runtime:v1.65.3
           imagePullPolicy: IfNotPresent
           name: supabase-functions
           securityContext: {}

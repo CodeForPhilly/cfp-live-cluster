@@ -30,7 +30,7 @@ spec:
             - name: KONG_DECLARATIVE_CONFIG
               value: /usr/local/kong/kong.yml
             - name: KONG_DNS_ORDER
-              value: 'LAST,A,CNAME'
+              value: LAST,A,CNAME
             - name: KONG_LOG_LEVEL
               value: warn
             - name: KONG_NGINX_PROXY_PROXY_BUFFERS
@@ -38,7 +38,7 @@ spec:
             - name: KONG_NGINX_PROXY_PROXY_BUFFER_SIZE
               value: 160k
             - name: KONG_PLUGINS
-              value: 'request-transformer,cors,key-auth,acl,basic-auth'
+              value: request-transformer,cors,key-auth,acl,basic-auth
             - name: SUPABASE_ANON_KEY
               valueFrom:
                 secretKeyRef:
@@ -59,7 +59,7 @@ spec:
                 secretKeyRef:
                   key: password
                   name: dashboard
-          image: 'kong:2.8.5'
+          image: kong:2.8.5
           imagePullPolicy: IfNotPresent
           name: supabase-kong
           ports:
@@ -77,14 +77,14 @@ spec:
       serviceAccountName: squadquest-supabase-supabase-kong
       volumes:
         - configMap:
-            defaultMode: 511
+            defaultMode: 777
             items:
               - key: template.yml
                 path: template.yml
             name: squadquest-supabase-supabase-kong
           name: config
         - configMap:
-            defaultMode: 511
+            defaultMode: 777
             items:
               - key: wrapper.sh
                 path: wrapper.sh

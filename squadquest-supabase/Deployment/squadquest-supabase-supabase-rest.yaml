@@ -34,7 +34,7 @@ spec:
             - name: PGRST_DB_ANON_ROLE
               value: anon
             - name: PGRST_DB_SCHEMAS
-              value: 'public,storage,graphql_public'
+              value: public,storage,graphql_public
             - name: PGRST_DB_USE_LEGACY_GUCS
               value: 'false'
             - name: DB_HOST
@@ -67,7 +67,7 @@ spec:
                 secretKeyRef:
                   key: secret
                   name: jwt
-          image: 'postgrest/postgrest:v12.2.3'
+          image: postgrest/postgrest:v12.2.3
           imagePullPolicy: IfNotPresent
           name: supabase-rest
           ports:

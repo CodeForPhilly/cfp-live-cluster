@@ -27,7 +27,7 @@ spec:
       containers:
         - args:
             - runserver
-            - '0.0.0.0:80'
+            - 0.0.0.0:80
           command:
             - python3
             - manage.py
@@ -53,7 +53,7 @@ spec:
                 secretKeyRef:
                   key: POSTGRES_PASSWORD
                   name: postgresql
-          image: 'ghcr.io/codeforphilly/third-places:0.1.11'
+          image: ghcr.io/codeforphilly/third-places:0.1.11
           imagePullPolicy: IfNotPresent
           livenessProbe:
             httpGet:

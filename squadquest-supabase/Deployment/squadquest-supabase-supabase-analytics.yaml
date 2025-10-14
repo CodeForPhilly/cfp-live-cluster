@@ -66,7 +66,7 @@ spec:
               value: $(DB_SCHEMA)
             - name: LOGFLARE_FEATURE_FLAG_OVERRIDE
               value: $(FEATURE_FLAG_OVERRIDE)
-          image: 'supabase/logflare:1.10.0'
+          image: supabase/logflare:1.10.0
           imagePullPolicy: IfNotPresent
           livenessProbe:
             httpGet:
@@ -99,7 +99,7 @@ spec:
                   name: postgres
             - name: DB_PORT
               value: '5432'
-          image: 'postgres:15-alpine'
+          image: postgres:15-alpine
           imagePullPolicy: IfNotPresent
           name: init-db
       securityContext: {}

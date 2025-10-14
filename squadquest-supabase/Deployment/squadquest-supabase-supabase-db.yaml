@@ -54,7 +54,7 @@ spec:
                 secretKeyRef:
                   key: database
                   name: postgres
-          image: 'supabase/postgres:15.6.1.143'
+          image: supabase/postgres:15.6.1.143
           imagePullPolicy: IfNotPresent
           livenessProbe:
             exec:
@@ -101,7 +101,7 @@ spec:
           command:
             - /bin/sh
             - '-c'
-          image: 'supabase/postgres:15.6.1.143'
+          image: supabase/postgres:15.6.1.143
           imagePullPolicy: IfNotPresent
           name: init-db
           volumeMounts:

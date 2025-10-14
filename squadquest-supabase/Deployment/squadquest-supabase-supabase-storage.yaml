@@ -50,7 +50,7 @@ spec:
             - name: DB_HOST
               value: squadquest-supabase-supabase-db
             - name: POSTGREST_URL
-              value: 'http://squadquest-supabase-supabase-rest:3000'
+              value: http://squadquest-supabase-supabase-rest:3000
             - name: DB_PASSWORD
               valueFrom:
                 secretKeyRef:
@@ -85,8 +85,8 @@ spec:
                   key: serviceKey
                   name: jwt
             - name: IMGPROXY_URL
-              value: 'http://squadquest-supabase-supabase-imgproxy:5001'
-          image: 'supabase/storage-api:v1.13.3'
+              value: http://squadquest-supabase-supabase-imgproxy:5001
+          image: supabase/storage-api:v1.13.3
           imagePullPolicy: IfNotPresent
           livenessProbe:
             httpGet:
@@ -123,7 +123,7 @@ spec:
                   name: postgres
             - name: DB_PORT
               value: '5432'
-          image: 'postgres:15-alpine'
+          image: postgres:15-alpine
           imagePullPolicy: IfNotPresent
           name: init-db
       restartPolicy: Always
