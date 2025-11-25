@@ -28,7 +28,7 @@ ingress:
 
 volumes:
   site: 10Gi
-  database: 30Gi
+  database: 50Gi
 
 backups:
   enabled: true
