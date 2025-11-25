@@ -77,14 +77,14 @@ spec:
       serviceAccountName: squadquest-supabase-supabase-kong
       volumes:
         - configMap:
-            defaultMode: 777
+            defaultMode: 0777
             items:
               - key: template.yml
                 path: template.yml
             name: squadquest-supabase-supabase-kong
           name: config
         - configMap:
-            defaultMode: 777
+            defaultMode: 0777
             items:
               - key: wrapper.sh
                 path: wrapper.sh

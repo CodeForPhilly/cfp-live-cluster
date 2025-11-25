@@ -64,6 +64,6 @@ spec:
             path: /var/log/pods
           name: pod-logs
         - configMap:
-            defaultMode: 777
+            defaultMode: 0777
             name: squadquest-supabase-supabase-vector-config
           name: vector-config
