@@ -2,46 +2,46 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
          <loc>https://codeforphilly.github.io/cfp-live-cluster/</loc>
-         <lastmod>2025-11-25</lastmod>
+         <lastmod>2025-12-06</lastmod>
     </url>
     <url>
          <loc>https://codeforphilly.github.io/cfp-live-cluster/echo-service/</loc>
-         <lastmod>2025-11-25</lastmod>
+         <lastmod>2025-12-06</lastmod>
     </url>
     <url>
          <loc>https://codeforphilly.github.io/cfp-live-cluster/development/</loc>
-         <lastmod>2025-11-25</lastmod>
+         <lastmod>2025-12-06</lastmod>
     </url>
     <url>
          <loc>https://codeforphilly.github.io/cfp-live-cluster/development/features/ingress/</loc>
-         <lastmod>2025-11-25</lastmod>
+         <lastmod>2025-12-06</lastmod>
     </url>
     <url>
          <loc>https://codeforphilly.github.io/cfp-live-cluster/development/features/sealed-secrets/</loc>
-         <lastmod>2025-11-25</lastmod>
+         <lastmod>2025-12-06</lastmod>
     </url>
     <url>
          <loc>https://codeforphilly.github.io/cfp-live-cluster/getting-started/</loc>
-         <lastmod>2025-11-25</lastmod>
+         <lastmod>2025-12-06</lastmod>
     </url>
     <url>
          <loc>https://codeforphilly.github.io/cfp-live-cluster/getting-started/service-setup/grafana/</loc>
-         <lastmod>2025-11-25</lastmod>
+         <lastmod>2025-12-06</lastmod>
     </url>
     <url>
          <loc>https://codeforphilly.github.io/cfp-live-cluster/getting-started/service-setup/sealed-secrets/</loc>
-         <lastmod>2025-11-25</lastmod>
+         <lastmod>2025-12-06</lastmod>
     </url>
     <url>
          <loc>https://codeforphilly.github.io/cfp-live-cluster/operations/</loc>
-         <lastmod>2025-11-25</lastmod>
+         <lastmod>2025-12-06</lastmod>
     </url>
     <url>
          <loc>https://codeforphilly.github.io/cfp-live-cluster/operations/upgrades/to-0.20/</loc>
-         <lastmod>2025-11-25</lastmod>
+         <lastmod>2025-12-06</lastmod>
     </url>
     <url>
          <loc>https://codeforphilly.github.io/cfp-live-cluster/operations/upgrades/to-1.0/</loc>
-         <lastmod>2025-11-25</lastmod>
+         <lastmod>2025-12-06</lastmod>
     </url>
 </urlset>
