@@ -77,7 +77,7 @@ spec:
                 secretKeyRef:
                   key: smtp-password
                   name: smtp-postmark
-          image: vaultwarden/server:1.33.2
+          image: vaultwarden/server:1.36.0
           imagePullPolicy: IfNotPresent
           livenessProbe:
             httpGet:
