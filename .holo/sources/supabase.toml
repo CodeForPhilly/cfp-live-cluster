@@ -1,4 +1,0 @@
-[holosource]
-# Use fork until bug fix is merged: https://github.com/supabase-community/supabase-kubernetes/pull/94
-url = "https://github.com/JarvusInnovations/supabase-kubernetes"
-ref = "refs/heads/main"
