@@ -1,0 +1,43 @@
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod-gateway
+  name: choose-native-plants
+  namespace: choose-native-plants
+spec:
+  gatewayClassName: eg
+  listeners:
+    - allowedRoutes:
+        namespaces:
+          from: Same
+      hostname: choose-native-plants.live.k8s.phl.io
+      name: https-subdomain
+      port: 443
+      protocol: HTTPS
+      tls:
+        certificateRefs:
+          - name: choose-native-plants-gw-tls
+        mode: Terminate
+    - allowedRoutes:
+        namespaces:
+          from: Same
+      hostname: choosenativeplants.com
+      name: https-apex
+      port: 443
+      protocol: HTTPS
+      tls:
+        certificateRefs:
+          - name: choosenativeplants-com-gw-tls
+        mode: Terminate
+    - allowedRoutes:
+        namespaces:
+          from: Same
+      hostname: www.choosenativeplants.com
+      name: https-www
+      port: 443
+      protocol: HTTPS
+      tls:
+        certificateRefs:
+          - name: www-choosenativeplants-com-gw-tls
+        mode: Terminate

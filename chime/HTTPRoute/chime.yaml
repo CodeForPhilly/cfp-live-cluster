@@ -1,0 +1,15 @@
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: chime
+  namespace: chime
+spec:
+  hostnames:
+    - penn-chime.phl.io
+    - penn-chime.live.k8s.phl.io
+  parentRefs:
+    - name: chime
+  rules:
+    - backendRefs:
+        - name: chime
+          port: 80

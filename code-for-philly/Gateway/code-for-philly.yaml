@@ -1,0 +1,43 @@
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod-gateway
+  name: code-for-philly
+  namespace: code-for-philly
+spec:
+  gatewayClassName: eg
+  listeners:
+    - allowedRoutes:
+        namespaces:
+          from: Same
+      hostname: codeforphilly.org
+      name: https-apex
+      port: 443
+      protocol: HTTPS
+      tls:
+        certificateRefs:
+          - name: codeforphilly-org-gw-tls
+        mode: Terminate
+    - allowedRoutes:
+        namespaces:
+          from: Same
+      hostname: www.codeforphilly.org
+      name: https-www
+      port: 443
+      protocol: HTTPS
+      tls:
+        certificateRefs:
+          - name: www-codeforphilly-org-gw-tls
+        mode: Terminate
+    - allowedRoutes:
+        namespaces:
+          from: Same
+      hostname: codeforphilly.live.k8s.phl.io
+      name: https-subdomain
+      port: 443
+      protocol: HTTPS
+      tls:
+        certificateRefs:
+          - name: codeforphilly-live-gw-tls
+        mode: Terminate

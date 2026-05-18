@@ -1,0 +1,32 @@
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod-gateway
+  name: vaultwarden
+  namespace: vaultwarden
+spec:
+  gatewayClassName: eg
+  listeners:
+    - allowedRoutes:
+        namespaces:
+          from: Same
+      hostname: vaultwarden.phl.io
+      name: https-vaultwarden
+      port: 443
+      protocol: HTTPS
+      tls:
+        certificateRefs:
+          - name: vaultwarden-phl-gw-tls
+        mode: Terminate
+    - allowedRoutes:
+        namespaces:
+          from: Same
+      hostname: bitwarden.phl.io
+      name: https-bitwarden
+      port: 443
+      protocol: HTTPS
+      tls:
+        certificateRefs:
+          - name: bitwarden-phl-gw-tls
+        mode: Terminate
