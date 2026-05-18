@@ -1,0 +1,32 @@
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod-gateway
+  name: chime
+  namespace: chime
+spec:
+  gatewayClassName: eg
+  listeners:
+    - allowedRoutes:
+        namespaces:
+          from: Same
+      hostname: penn-chime.phl.io
+      name: https-apex
+      port: 443
+      protocol: HTTPS
+      tls:
+        certificateRefs:
+          - name: penn-chime-phl-gw-tls
+        mode: Terminate
+    - allowedRoutes:
+        namespaces:
+          from: Same
+      hostname: penn-chime.live.k8s.phl.io
+      name: https-subdomain
+      port: 443
+      protocol: HTTPS
+      tls:
+        certificateRefs:
+          - name: penn-chime-live-gw-tls
+        mode: Terminate
