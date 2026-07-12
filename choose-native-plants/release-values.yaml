@@ -3,7 +3,6 @@ app:
     tag: "2.3.1"
   # IMPORTANT: Only include environment variables here that are NOT already defined in the Helm chart template
   # The following environment variables are already defined in the template and should NOT be duplicated here:
-  # - PAC_API_BASE_URL, PAC_API_KEY (from pac-api secret)
   # - AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_DEFAULT_REGION, LINODE_BUCKET_NAME, LINODE_ENDPOINT_URL (from linode-storage secret)
   # Duplicating these variables causes patch errors in the GitOps deployment process
   env:
@@ -14,8 +13,6 @@ app:
         name: app
     - secretRef:
         name: mongo
-    - secretRef:
-        name: pac-api
     - secretRef:
         name: linode-storage
 
@@ -56,3 +53,8 @@ ingress:
       hosts:
         - choosenativeplants.com
         - www.choosenativeplants.com
+
+# Enable after choose-native-plants.secrets/plantagents-postgres.yaml is sealed
+# and a one-off sync has passed sandbox acceptance.
+plantagentsSync:
+  enabled: false
