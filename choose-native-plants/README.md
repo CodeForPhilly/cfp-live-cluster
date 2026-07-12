@@ -26,11 +26,11 @@ Ensure that the version in both files match (with the toml file using the 'v' pr
 
 ```powershell
 # Create a regular Kubernetes secret YAML file
-# Example for PAC API credentials
-kubectl create secret generic pac-api --from-literal=PAC_API_BASE_URL=https://app.plantagents.org --from-literal=PAC_API_KEY=your-api-key --dry-run=client -o yaml > pac-api-secret.yaml
+# PlantAgents Neon read-only connection
+kubectl create secret generic plantagents-postgres --from-literal=PLANTAGENTS_DATABASE_URL='postgresql://...' --dry-run=client -o yaml > plantagents-postgres-secret.yaml
 
 # Seal the secret
-kubeseal --cert https://sealed-secrets.live.k8s.phl.io/v1/cert.pem --namespace choose-native-plants -f pac-api-secret.yaml -w cfp-live-cluster/choose-native-plants.secrets/pac-api.yaml
+kubeseal --cert https://sealed-secrets.live.k8s.phl.io/v1/cert.pem --namespace choose-native-plants -f plantagents-postgres-secret.yaml -w cfp-live-cluster/choose-native-plants.secrets/plantagents-postgres.yaml
 ```
 
 4. Commit and push the changes to the repository:
@@ -54,6 +54,17 @@ git push origin main
   - https://www.choosenativeplants.com/
 
 ## Managing the Application
+
+### PlantAgents nursery data sync
+
+After the read-only secret above is sealed and sandbox acceptance passes, set `plantagentsSync.enabled: true`. Create the first run manually and inspect its JSON summary:
+
+```powershell
+kubectl create job --from=cronjob/choose-native-plants-plantagents-sync plantagents-sync-manual -n choose-native-plants
+kubectl logs -n choose-native-plants job/plantagents-sync-manual
+```
+
+The schedule is Sunday 07:00 UTC. Failed validation leaves the last active MongoDB snapshot unchanged.
 
 ### Syncing Images
 
