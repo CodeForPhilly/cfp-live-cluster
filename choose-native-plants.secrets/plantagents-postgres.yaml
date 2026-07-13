@@ -1,0 +1,15 @@
+apiVersion: bitnami.com/v1alpha1
+kind: SealedSecret
+metadata:
+  creationTimestamp: null
+  name: plantagents-postgres
+  namespace: choose-native-plants
+spec:
+  encryptedData:
+    PLANTAGENTS_DATABASE_URL: AgBFTgR1u6zZVyL9iEG3g41BDzBFo6aBttWao5EvtnYn93Zso1iirKWA8Pc3UPxGpgXJ1ZOeM+16i+qObjAFHsVtgfjsin4+wSXXaSO5DDXupNKR6B6D+5eSWcHep1kNVsGUxyRf4IMq4fx9tDwXjVPiQ0szU3mc7jgBwdRt1tTn15THVIa+Cu1LPYpWIW5qW+haSTDHGbL3lj4+AYtss+i/JlI5V1sW75moLpjB6XALRlaBvWYH8bNyJFiHrt6xqKxEvNO6lYEA/SlwyDSHa7J0GvkWb4vG8vkL79NAAnY3dHrSDHfWP3eTH4eT5fQKVFZgk6CU9kUhL2w4zOFEX2NXUw8w7dk78KgRYKwDSU0Oe2OAdaI3EXkUSZMXkcv3K0jJTtxCJz7/Pxgz1I4C4Oo5GVBmjVvyPVsOCM0mZqGxkrPq+SxjKZXd89wTQAq6wm02G6WnjSJPLHSL4qFycAfuWMWSNjTiv/rDPgdVLRolUpoy0GNKQ8ubhRN8gSllQGgxcuoO4tFGHL+wEqyo3bfC+bBjaVu2nJ983wRIImqc4fiE9mU89B9eOy07+jMClVeKW/Jx84NDdnVHvnLKb4DshMDOw5cDLU2grntPbnMqKQymFK7bFVsZMOXQNcjVV4dO4mOGtiT5N3agX5aOdraiSJifnG4HRQ7lgOFZvkjIIhnjSHY1xUSRRnQlRAkDYgBdqn9d+T/F+QxL8cAQfuadVaHmgLXrpGxZbn1RLw74bbJLifNDtNaTkTSPuItzkg5zBarq1ArpRuCTyBrHZHqbGhK0nT0XO9wP6DyzG3sJObqVRDNPCRB/KA0fGqxfiU4QWlKmr2ZS39xiZteOV06cFO67xlO5tp06uWvSHY+0DhjhvWgsG4mGnNYjskU/2f9knrUf797zLb0mveIiEsupkqoHSwlpgvA//H+rOeCr3gS1amEtY3J1TpzgFZ7lOUWP1z9Wf+uKpg8j1KIbS1JArUTu1QHubks=
+  template:
+    metadata:
+      creationTimestamp: null
+      name: plantagents-postgres
+      namespace: choose-native-plants
+    type: Opaque
