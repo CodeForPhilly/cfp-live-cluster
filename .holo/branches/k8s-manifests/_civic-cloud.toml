@@ -1,4 +1,15 @@
 [holomapping]
 holosource = "=>k8s-blueprint-lke"
-files = "**"
+files = [
+    "**",
+    # ingress-nginx is decommissioned (#144). The exclusion lives here rather
+    # than upstream because cluster-template still ships ingress-nginx for
+    # clusters that haven't migrated.
+    #
+    # Both excludes are required: the first drops the chart input, the second
+    # drops the lens config — without it the helm3 lens errors trying to render
+    # from a now-empty input tree.
+    "!ingress-nginx/**",
+    "!.holo/lenses/ingress-nginx.toml",
+]
 before = "*"
