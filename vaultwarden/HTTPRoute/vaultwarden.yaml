@@ -6,7 +6,6 @@ metadata:
 spec:
   hostnames:
     - vaultwarden.phl.io
-    - bitwarden.phl.io
   parentRefs:
     - name: vaultwarden
   rules:

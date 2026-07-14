@@ -86,6 +86,7 @@ data:
     provisioning = /etc/grafana/provisioning
     [server]
     domain = metrics.live.k8s.phl.io
+    root_url = https://metrics.live.k8s.phl.io
 kind: ConfigMap
 metadata:
   labels:
