@@ -80,9 +80,8 @@ alerting:
           - uid: cert-ops-email
             type: email
             settings:
-              # TODO(#163): confirm the full recipient list with the team.
-              # Semicolon-separated. Defaults to the ACME contact address.
-              addresses: "services@codeforphilly.org"
+              # Semicolon-separated. services@ is also cert-manager's ACME contact.
+              addresses: "chris@jarv.us;tsouthard@codeforphilly.org;services@codeforphilly.org"
               singleEmail: false
 
   policies.yaml:
