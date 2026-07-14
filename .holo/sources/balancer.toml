@@ -17,5 +17,5 @@ url = "https://github.com/CodeForPhilly/balancer-main.git"
 #     balancer-config, which is not the same thing.)
 #
 # Adopting v1.1.6 means taking the new layout, the ConfigMap, and the HTTPRoute
-# port change together. Tracked in #167. Don't restore a branch ref without it.
+# port change together. Tracked in #168. Don't restore a branch ref without it.
 ref = "c4f28bf2c28eb457ab82d3097f42567ebce9cb1d"
