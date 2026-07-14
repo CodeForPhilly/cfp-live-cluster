@@ -3,33 +3,44 @@ kind: Kustomization
 
 namespace: balancer
 
+# balancer-main v1.1.7 owns its own HTTPRoute (paths, backends, ports) and no
+# longer ships an Ingress. This repo owns the Gateway — hostname, TLS, issuer —
+# in _gateways/balancer.yaml. The route attaches to it by name and declares no
+# hostnames, so it inherits the Gateway's listener hostname.
+#
+# We deliberately do not take upstream's gateway-listeners.yaml, and v1.1.7
+# removed it: it declared a ListenerSet, which Envoy Gateway v1.7.3 does not
+# reconcile ("XListenerSet CRD not found, skipping XListenerSet watch"). It
+# would apply cleanly and then be silently ignored.
 resources:
   - manifests/namespace.yaml
   - manifests/deployment.yaml
   - manifests/service.yaml
-  - manifests/ingress.yaml
+  - manifests/httproute.yaml
 
+# Stays on the running version. v1.1.7 is a deploy-manifest release with no
+# application changes, so bumping the image here would ship app code under cover
+# of a routing change. Bump it deliberately, on its own.
 images:
   - name: ghcr.io/codeforphilly/balancer-main/app
     newTag: "1.1.5"
 
+# v1.1.7's Deployment does `envFrom: configMapRef: balancer-config` alongside the
+# existing `secretRef: balancer-config` (our SealedSecret, holding SECRET_KEY,
+# SQL_*, and the API keys). A ConfigMap and a Secret may share a name.
+#
+# balancer.env is empty upstream, and the app reads ALLOWED_HOSTS rather than
+# HOSTNAME — so this ConfigMap carries nothing. It exists solely so configMapRef
+# resolves; without it the pods fail with CreateContainerConfigError.
+configMapGenerator:
+  - name: balancer-config
+    envs:
+      - manifests/balancer.env
+
+generatorOptions:
+  disableNameSuffixHash: true
+
 patches:
-  - target:
-      kind: Ingress
-      name: balancer
-    patch: |-
-      - op: add
-        path: /metadata/annotations/cert-manager.io~1cluster-issuer
-        value: letsencrypt-prod
-      - op: add
-        path: /metadata/annotations/kubernetes.io~1ingress.class
-        value: nginx
-      - op: replace
-        path: /spec/tls/0/hosts/0
-        value: balancerproject.org
-      - op: replace
-        path: /spec/rules/0/host
-        value: balancerproject.org
   - target:
       kind: Namespace
       name: balancer
