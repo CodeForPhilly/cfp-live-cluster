@@ -4,11 +4,13 @@ metadata:
   name: balancer
   namespace: balancer
 spec:
-  hostnames:
-    - balancerproject.org
   parentRefs:
     - name: balancer
   rules:
     - backendRefs:
         - name: balancer
-          port: 8000
+          port: 80
+      matches:
+        - path:
+            type: PathPrefix
+            value: /
