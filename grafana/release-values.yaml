@@ -26,7 +26,11 @@ grafana.ini:
     from_address: services@codeforphilly.org
     from_name: CFP Live Cluster
 
-# GF_SMTP_USER / GF_SMTP_PASSWORD from grafana.secrets/smtp-postmark.yaml.
+# All three from the sealed grafana.secrets/smtp-postmark.yaml. ALERT_EMAIL_TO
+# is the recipient list — kept in the Secret rather than cleartext here because
+# this repo is public and two of the addresses are personal. Grafana expands
+# ${ALERT_EMAIL_TO} in the contact point below (verified on 9.2.5). Helm's tpl
+# only touches {{ }}, so ${ } passes through untouched.
 envValueFrom:
   GF_SMTP_USER:
     secretKeyRef:
@@ -36,6 +40,10 @@ envValueFrom:
     secretKeyRef:
       name: smtp-postmark
       key: smtp-password
+  ALERT_EMAIL_TO:
+    secretKeyRef:
+      name: smtp-postmark
+      key: alert-recipients
 
 # Pin the Prometheus datasource UID so the provisioned alert rules can reference
 # it stably. This restates the datasources the blueprint provides (Prometheus +
@@ -80,8 +88,9 @@ alerting:
           - uid: cert-ops-email
             type: email
             settings:
-              # Semicolon-separated. services@ is also cert-manager's ACME contact.
-              addresses: "chris@jarv.us;tsouthard@codeforphilly.org;services@codeforphilly.org"
+              # Recipient list from the sealed Secret (see envValueFrom above),
+              # not cleartext — public repo. Semicolon-separated.
+              addresses: "${ALERT_EMAIL_TO}"
               singleEmail: false
 
   policies.yaml:
