@@ -1,0 +1,99 @@
+# These values are applied last as downstream overrides
+# See https://github.com/prometheus-community/helm-charts/blob/main/charts/prometheus/values.yaml
+
+# Certificate alerting.
+#
+# These rules exist because of the 2026-07-12 outage (#144, #163): nine certificates
+# expired simultaneously and it was invisible for 56 days. cert-manager logged nothing,
+# the Certificates reported Ready=True right up until the moment they expired, and the
+# first signal anyone got was a user hitting a browser warning.
+#
+# The metrics were there the whole time. Nobody was watching them.
+#
+# These are generic — they belong in cluster-template, not here, and are proposed
+# upstream in JarvusInnovations/cluster-template. Keep them here until that lands, then
+# drop them and leave only the receiver config below.
+serverFiles:
+  alerting_rules.yml:
+    groups:
+      - name: cert-manager
+        rules:
+          # THE ONE THAT WOULD HAVE CAUGHT JULY.
+          #
+          # A Certificate stays Ready=True while it is valid, so readiness tells you
+          # nothing until it's already too late. What actually happened is that
+          # renewalTime passed and nothing renewed — silently, for 30 days.
+          #
+          # status.renewalTime jumps forward on a successful renewal. If it is more than
+          # a day in the past, renewal is stuck. This fires ~29 days before expiry, while
+          # there is still plenty of time to fix it.
+          - alert: CertManagerCertRenewalOverdue
+            expr: (time() - certmanager_certificate_renewal_timestamp_seconds) > 86400
+            for: 1h
+            labels:
+              severity: warning
+            annotations:
+              summary: "Certificate {{ $labels.namespace }}/{{ $labels.name }} is overdue for renewal"
+              description: >-
+                Renewal was scheduled {{ $value | humanizeDuration }} ago and has not
+                happened. The certificate is probably still valid, so nothing looks
+                broken yet — that is exactly how the July 2026 outage stayed invisible
+                for 56 days. Check `kubectl get challenges -A` for a stuck challenge
+                holding this hostname's slot.
+
+          # Any challenge that lingers is abnormal — a healthy HTTP-01 completes in
+          # seconds. A challenge pending for an hour means something is wrong; one
+          # pending for days is the deadlock that caused the outage (a half-orphaned
+          # Challenge holds its dnsName's scheduler slot forever, and cert-manager will
+          # not run two challenges for the same dnsName concurrently).
+          - alert: CertManagerChallengeStuck
+            expr: certmanager_certificate_challenge_status == 1
+            for: 1h
+            labels:
+              severity: warning
+            annotations:
+              summary: "ACME challenge stuck for {{ $labels.namespace }}/{{ $labels.name }}"
+              description: >-
+                Challenge has been in flight for over an hour ({{ $labels.status }}).
+                Healthy challenges resolve in seconds. If its Order is already gone, the
+                Challenge is a half-orphan — Kubernetes GC will not reap it, because it
+                also has an owner ref to the ClusterIssuer — and it must be deleted by
+                name or it will starve every future renewal for this hostname.
+
+          # Backstop. Renewal begins at 30 days out, so 21 days means renewal has been
+          # failing for over a week.
+          - alert: CertManagerCertExpiringSoon
+            expr: (certmanager_certificate_expiration_timestamp_seconds - time()) < (21 * 86400)
+            for: 1h
+            labels:
+              severity: warning
+            annotations:
+              summary: "Certificate {{ $labels.namespace }}/{{ $labels.name }} expires in {{ $value | humanizeDuration }}"
+              description: "Renewal starts at 30 days, so this has been failing for a week or more."
+
+          - alert: CertManagerCertExpiringCritical
+            expr: (certmanager_certificate_expiration_timestamp_seconds - time()) < (7 * 86400)
+            for: 10m
+            labels:
+              severity: critical
+            annotations:
+              summary: "Certificate {{ $labels.namespace }}/{{ $labels.name }} expires in {{ $value | humanizeDuration }}"
+              description: "Under a week to expiry. Users will see browser warnings when this lapses."
+
+          - alert: CertManagerCertNotReady
+            expr: certmanager_certificate_ready_status{condition="True"} == 0
+            for: 1h
+            labels:
+              severity: warning
+            annotations:
+              summary: "Certificate {{ $labels.namespace }}/{{ $labels.name }} is not Ready"
+              description: "Issuance has been failing for over an hour."
+
+          - alert: CertManagerClusterIssuerNotReady
+            expr: certmanager_clusterissuer_ready_status{condition="True"} == 0
+            for: 15m
+            labels:
+              severity: critical
+            annotations:
+              summary: "ClusterIssuer {{ $labels.name }} is not Ready"
+              description: "No certificate can be issued or renewed through this issuer."
