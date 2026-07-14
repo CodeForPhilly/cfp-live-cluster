@@ -21,7 +21,7 @@ spec:
   template:
     metadata:
       annotations:
-        checksum/config: 6984ad57a19ca0af1bb6339c240bec405ecef08a6d2bb6487f90bb61634f44d7
+        checksum/config: 29deb4f2dc4142112725219ae1a15b3b798c13d0a802de9c9b9139162d3f8cab
         checksum/dashboards-json-config: 4f1a6849aba728c6f66b9b27a78f020f7f74b2cb327597cec42eedc8ab62986a
         checksum/sc-dashboard-provider-config: 01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b
       labels:

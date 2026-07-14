@@ -1,0 +1,17 @@
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: bitwarden-redirect
+  namespace: vaultwarden
+spec:
+  hostnames:
+    - bitwarden.phl.io
+  parentRefs:
+    - name: vaultwarden
+  rules:
+    - filters:
+        - requestRedirect:
+            hostname: vaultwarden.phl.io
+            scheme: https
+            statusCode: 301
+          type: RequestRedirect
