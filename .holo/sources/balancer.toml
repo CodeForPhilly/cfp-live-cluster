@@ -1,21 +1,6 @@
 [holosource]
 url = "https://github.com/CodeForPhilly/balancer-main.git"
 
-# Pinned to a commit, deliberately — not refs/heads/main.
-#
-# balancer-main#517 (v1.1.6) moved balancer to Gateway API upstream and deleted
-# ingress.yaml, which balancer/kustomization.yaml still lists — so tracking main
-# breaks the build outright. v1.1.6 also carries two changes we cannot absorb
-# without matching edits on our side:
-#
-#   - Service port 8000 -> 80, while _gateways/balancer.yaml's HTTPRoute still
-#     targets 8000 — the backend would stop resolving.
-#   - Deployment gains `envFrom: configMapRef: balancer-config`, a ConfigMap
-#     built by upstream's configMapGenerator. Our kustomization doesn't use that
-#     generator, so the ConfigMap wouldn't exist and pods would fail with
-#     CreateContainerConfigError. (We have a *SealedSecret* named
-#     balancer-config, which is not the same thing.)
-#
-# Adopting v1.1.6 means taking the new layout, the ConfigMap, and the HTTPRoute
-# port change together. Tracked in #168. Don't restore a branch ref without it.
-ref = "c4f28bf2c28eb457ab82d3097f42567ebce9cb1d"
+# Pinned to a release tag, never a branch. Tracking refs/heads/main is what let
+# balancer-main#517 break this repo's build the moment it merged.
+ref = "refs/tags/v1.1.7"

@@ -1,3 +1,15 @@
+# Gateway only. The HTTPRoute lives in balancer-main (v1.1.7+) and is projected
+# through balancer/kustomization.yaml.
+#
+# The split: this cluster decides where the app is reachable — hostname, TLS,
+# issuer, GatewayClass. The app decides what it serves — paths, backends, ports.
+# balancer's route attaches to this Gateway by name and declares no hostnames,
+# so it inherits the listener hostname below and the same file works unchanged in
+# sandbox. See deploy/manifests/balancer/README.md in balancer-main.
+#
+# Do not add an HTTPRoute here. Its backend port would drift the moment the app
+# changed its Service — which is exactly what happened before v1.1.7 (the route
+# said 8000; the app had moved to 80).
 apiVersion: gateway.networking.k8s.io/v1
 kind: Gateway
 metadata:
@@ -19,18 +31,3 @@ spec:
       allowedRoutes:
         namespaces:
           from: Same
----
-apiVersion: gateway.networking.k8s.io/v1
-kind: HTTPRoute
-metadata:
-  name: balancer
-  namespace: balancer
-spec:
-  parentRefs:
-    - name: balancer
-  hostnames:
-    - balancerproject.org
-  rules:
-    - backendRefs:
-        - name: balancer
-          port: 8000
