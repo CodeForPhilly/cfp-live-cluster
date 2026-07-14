@@ -1,6 +1,6 @@
 app:
   image:
-    tag: "2.3.1"
+    tag: "2.3.3"
   # IMPORTANT: Only include environment variables here that are NOT already defined in the Helm chart template
   # The following environment variables are already defined in the template and should NOT be duplicated here:
   # - AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_DEFAULT_REGION, LINODE_BUCKET_NAME, LINODE_ENDPOINT_URL (from linode-storage secret)
