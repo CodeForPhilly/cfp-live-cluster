@@ -20,6 +20,8 @@ spec:
         - envFrom:
             - secretRef:
                 name: balancer-config
+            - configMapRef:
+                name: balancer-config
           image: ghcr.io/codeforphilly/balancer-main/app:1.1.5
           name: app
           ports:
