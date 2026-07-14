@@ -40,7 +40,7 @@ Cluster-scoped resources land in `_/<Kind>/<name>.yaml`.
 ## Directory map
 
 | Path | Purpose |
-|---|---|
+| --- | --- |
 | `_infra/` | Cluster-level infra (cert-manager issuers, envoy-gateway config) |
 | `_gateways/` | Per-app Gateway + HTTPRoute pairs, one file per app |
 | `_admins/`, `_docs/` | Admin RBAC + docs source (workload dirs stay bare) |
@@ -77,10 +77,12 @@ HTTP (port 80) is handled globally by `_infra/envoy-gateway/http-redirect.yaml` 
 
 Two pairs exist side by side until the migration finishes:
 
-- `letsencrypt-{prod,staging}` (nginx-solver) in `cert-manager.issuers.yaml` at the repo root — keeps existing Ingress-managed Certs renewing
-- `letsencrypt-{prod,staging}-gateway` (gatewayHTTPRoute solver) in `_infra/cert-manager/issuers-gateway.yaml` — for new Gateway-issued Certs
+- `letsencrypt-{prod,staging}` (nginx-solver) in `cert-manager.issuers.yaml` at the repo root — **dead**. It cannot issue anything (see the proxy-protocol note under Cluster context). It's kept only so the legacy `<app>-tls` Certificates have an issuerRef to point at until their Ingresses are removed.
+- `letsencrypt-{prod,staging}-gateway` (gatewayHTTPRoute solver) in `_infra/cert-manager/issuers-gateway.yaml` — the only working path.
 
 New Gateway resources should annotate `letsencrypt-prod-gateway`. The nginx-solver pair gets removed in phase 6 of #144, after all Ingresses are gone.
+
+**Don't "fix" a stuck cert by repointing a Gateway at `letsencrypt-prod`.** It looks reasonable (DNS still points at nginx, so Let's Encrypt can reach an nginx solver) but it cannot work — cert-manager's self-check runs *in-cluster*, where nginx is unreachable. The only fix for a stuck cert is to cut that hostname's DNS over to Envoy.
 
 ### Envoy Gateway
 
@@ -136,10 +138,12 @@ For chart versions owned by the upstream chain: bump in cluster-template or civi
 
 Things not in any single grep-able file:
 
-- **Wildcard DNS**: `*.live.k8s.phl.io` resolves to the cluster's ingress LB. During the Envoy migration this stays pointed at ingress-nginx; per-hostname A records override the wildcard as each app cuts over to Envoy.
-- **Apex domains in tree**: `balancerproject.org`, `choosenativeplants.com` (+ `www.`), `codeforphilly.org` (+ `www.`), `penn-chime.phl.io`, `vaultwarden.phl.io`, `bitwarden.phl.io`. Apex ACME challenges only work once DNS points at Envoy — plan cutover and cert issuance together for these.
-- **Linode LKE LoadBalancer hairpin**: now native (in-cluster pods can reach the cluster's LB external IP). hairpin-proxy was the historical workaround and is scheduled for removal as part of #144 (the civic-cloud v1.9.2 bump drops it from the projection).
-- **ingress-nginx + hairpin-proxy still present** on this cluster as of writing — both go away in #144 (phases 1 and 5.5 respectively). Don't reintroduce after they're gone.
+- **⚠️ ingress-nginx can no longer issue ANY certificate.** It runs with `use-proxy-protocol: true` and the Linode `service.beta.kubernetes.io/linode-loadbalancer-proxy-protocol: v2` annotation, so it requires a PROXY header on every connection — and only the Linode NodeBalancer adds one. In-cluster traffic (to the LB external IP *or* the ClusterIP) is short-circuited by kube-proxy straight to the nginx pods, never traverses the NodeBalancer, arrives with no PROXY header, and nginx drops the connection. cert-manager must pass an **in-cluster** HTTP-01 self-check before it will ask Let's Encrypt to validate, and that check can never succeed against nginx. Net effect: **a hostname still pointed at nginx cannot renew its cert.** Every remaining host must cut over to Envoy before its current cert expires. Verify with `curl` from a pod: plain HTTP to the nginx ClusterIP returns an empty reply; the same connection with a `PROXY TCP4 …` preamble returns a real response.
+- **hairpin-proxy is gone, and that's what broke the above.** It was an in-cluster haproxy that rewrote cluster DNS for public hostnames and re-added the PROXY header. It was removed in phase 1 of #144 (civic-cloud v1.9.2) on the belief that Linode LKE now does LoadBalancer hairpin natively. Native hairpin is real, but **irrelevant** — the packets reach nginx fine, they just arrive without the header the NodeBalancer would have prepended. Removing hairpin-proxy silently killed every nginx cert renewal on 2026-05-18; nine certs expired together on 2026-07-12 before anyone noticed. Don't reintroduce it (Envoy is the fix), but don't repeat the reasoning either.
+- **Never enable proxy protocol on Envoy.** Envoy Gateway supports it via `ClientTrafficPolicy.enableProxyProtocol`. Turning it on to recover real client IPs would recreate the exact trap above — cert-manager's self-checks would start failing against Envoy too. The cost of leaving it off is that apps see the NodeBalancer's IP rather than the client's in `x-forwarded-for`.
+- **Wildcard DNS**: `*.live.k8s.phl.io` resolves to the cluster's ingress LB, still ingress-nginx. Per-hostname A records override the wildcard as each app cuts over to Envoy. **Don't flip the wildcard as a shortcut** — it moves every hostname at once, including any whose Gateway isn't ready. Flip it (and delete the per-host records) only once every host is on Envoy. DNS is managed in OpenTofu at [CodeForPhilly/ops](https://github.com/CodeForPhilly/ops) → `tofu/dns`; a cutover is a one-line change to the host→LB map in `locals.tf`.
+- **Apex domains in tree**: `balancerproject.org`, `choosenativeplants.com` (+ `www.`), `codeforphilly.org` (+ `www.`), `penn-chime.phl.io`, `vaultwarden.phl.io`, `bitwarden.phl.io`. Apex ACME challenges only work once DNS points at Envoy — plan cutover and cert issuance together for these. `choosenativeplants.com` is at **Namecheap**, not Cloud DNS, so it can't be moved from the ops repo.
+- **Expect ~60–90s of hard downtime per hostname at cutover.** The cert can't issue until DNS points at Envoy (Let's Encrypt has to reach the solver), and Envoy's HTTPS listener doesn't program until the cert Secret exists — meanwhile HTTP 301s into a listener that isn't there. Keep TTLs at 60s so rollback is fast.
 - **No cnpg / shared-cluster** on this cluster yet. If a database is needed, it ships per-app (e.g. vaultwarden runs its own PostgreSQL StatefulSet via the gissilabs chart; chime + third-places similar).
 
 ## Guardrails
@@ -157,6 +161,9 @@ Editing workspace files in this repo and opening PRs are fine without per-action
 ## Known external issues
 
 - **hologit shallow-clone race** ([JarvusInnovations/hologit#450](https://github.com/JarvusInnovations/hologit/issues/450)) — `Build k8s-manifests` intermittently fails with `fatal: shallow file has changed since we read it`. Rerun the workflow.
+- **cert-manager Challenges outlive their Order and deadlock renewals.** A Challenge carries owner references to *both* its Order and the ClusterIssuer. Kubernetes GC only reaps a dependent once **all** owners are gone, so when the Order is deleted the Challenge survives as a half-orphan — `processing: true`, no controller left to drive it, no GC path to remove it. It then holds its hostname's slot forever, because **cert-manager's scheduler won't run two HTTP-01 challenges for the same dnsName concurrently**. Every renewal for that hostname is silently starved: the new Challenge is created but never scheduled, and sits with a completely empty `.status` while cert-manager logs nothing about it at all.
+
+  Symptom to watch for: `kubectl get challenges -A` shows a challenge `pending` for many days, and a second challenge for the same `dnsName` with a blank STATE. Fix is to delete the stale one by name. This is what turned a broken solver into nine simultaneously-expired certs.
 
 For repo-local issues, check the open issue list directly — anything I'd list here will rot.
 
