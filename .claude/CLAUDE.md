@@ -46,15 +46,14 @@ Cluster-scoped resources land in `_/<Kind>/<name>.yaml`.
 | `_admins/`, `_docs/` | Admin RBAC + docs source (workload dirs stay bare) |
 | `<app>/` | App workspace — `release-values.yaml` for helm, `kustomization.yaml` for kustomize |
 | `<app>.secrets/` | SealedSecrets for that namespace |
-| `cert-manager.issuers.yaml` | Legacy nginx-solver ClusterIssuers at repo root — kept parallel to `_infra/cert-manager/issuers-gateway.yaml` until per-app cutover finishes (see [#144](https://github.com/CodeForPhilly/cfp-live-cluster/issues/144)) |
-| `echo-http.yaml` | Raw Namespace+Deployment+Service+Ingress for the echo-http probe |
+| `echo-http.yaml` | Raw Namespace+Deployment+Service for the echo-http probe (routing via `_gateways/echo-http.yaml`) |
 | `.holo/sources/` | Holosource pins (URL + ref) |
 | `.holo/branches/<branch>/` | Holomappings — source content → workspace path |
 | `.holo/lenses/` | Lens configs |
 
 `_` prefix means "not a workload namespace." Workspace convention; projected tree drops it. `_infra/` and `_gateways/` were added in the in-flight migration; `_admins/` and `_docs/` followed the convention in a separate refactor.
 
-Workload roots currently in tree: `balancer/` (kustomize), `browserless-chrome/` (raw yaml), `chime/`, `choose-native-plants/`, `code-for-philly/`, `grafana/`, `sealed-secrets/`, `third-places/`, `vaultwarden/` (all helm).
+Workload roots currently in tree: `balancer/` (kustomize), `chime/`, `choose-native-plants/`, `code-for-philly/`, `grafana/`, `sealed-secrets/`, `third-places/`, `vaultwarden/` (all helm).
 
 ## Standing patterns
 
@@ -73,16 +72,13 @@ HTTP (port 80) is handled globally by `_infra/envoy-gateway/http-redirect.yaml` 
 
 `<app>-gw-tls` (or `<descriptive>-gw-tls` for multi-hostname apps where each listener gets its own cert) — distinct from legacy `<app>-tls` so the two paths coexist during migration.
 
-### ClusterIssuers — parallel during migration
+### ClusterIssuers
 
-Two pairs exist side by side until the migration finishes:
+Only one pair exists: `letsencrypt-{prod,staging}-gateway` (gatewayHTTPRoute solver) in `_infra/cert-manager/issuers-gateway.yaml`. Annotate Gateways with `letsencrypt-prod-gateway`.
 
-- `letsencrypt-{prod,staging}` (nginx-solver) in `cert-manager.issuers.yaml` at the repo root — **dead**. It cannot issue anything (see the proxy-protocol note under Cluster context). It's kept only so the legacy `<app>-tls` Certificates have an issuerRef to point at until their Ingresses are removed.
-- `letsencrypt-{prod,staging}-gateway` (gatewayHTTPRoute solver) in `_infra/cert-manager/issuers-gateway.yaml` — the only working path.
+The nginx-solver pair (`letsencrypt-{prod,staging}`, formerly `cert-manager.issuers.yaml` at the repo root) was **deleted** in phase 6 of #144, along with ingress-nginx itself. Don't recreate them. They were a footgun long before they were removed: with ingress-nginx unreachable in-cluster (proxy-protocol — see Cluster context), they could not issue a certificate, yet they still looked perfectly usable. During the July 2026 incident an attempt to "fix" stuck certs by repointing Gateways at `letsencrypt-prod` cost hours — every challenge sat unschedulable, because cert-manager's self-check runs *in-cluster*, where nginx could never answer.
 
-New Gateway resources should annotate `letsencrypt-prod-gateway`. The nginx-solver pair gets removed in phase 6 of #144, after all Ingresses are gone.
-
-**Don't "fix" a stuck cert by repointing a Gateway at `letsencrypt-prod`.** It looks reasonable (DNS still points at nginx, so Let's Encrypt can reach an nginx solver) but it cannot work — cert-manager's self-check runs *in-cluster*, where nginx is unreachable. The only fix for a stuck cert is to cut that hostname's DNS over to Envoy.
+The only way to fix a stuck cert is to make the hostname reachable on the path its solver actually uses.
 
 ### Envoy Gateway
 
@@ -138,12 +134,12 @@ For chart versions owned by the upstream chain: bump in cluster-template or civi
 
 Things not in any single grep-able file:
 
-- **⚠️ ingress-nginx can no longer issue ANY certificate.** It runs with `use-proxy-protocol: true` and the Linode `service.beta.kubernetes.io/linode-loadbalancer-proxy-protocol: v2` annotation, so it requires a PROXY header on every connection — and only the Linode NodeBalancer adds one. In-cluster traffic (to the LB external IP *or* the ClusterIP) is short-circuited by kube-proxy straight to the nginx pods, never traverses the NodeBalancer, arrives with no PROXY header, and nginx drops the connection. cert-manager must pass an **in-cluster** HTTP-01 self-check before it will ask Let's Encrypt to validate, and that check can never succeed against nginx. Net effect: **a hostname still pointed at nginx cannot renew its cert.** Every remaining host must cut over to Envoy before its current cert expires. Verify with `curl` from a pod: plain HTTP to the nginx ClusterIP returns an empty reply; the same connection with a `PROXY TCP4 …` preamble returns a real response.
-- **hairpin-proxy is gone, and that's what broke the above.** It was an in-cluster haproxy that rewrote cluster DNS for public hostnames and re-added the PROXY header. It was removed in phase 1 of #144 (civic-cloud v1.9.2) on the belief that Linode LKE now does LoadBalancer hairpin natively. Native hairpin is real, but **irrelevant** — the packets reach nginx fine, they just arrive without the header the NodeBalancer would have prepended. Removing hairpin-proxy silently killed every nginx cert renewal on 2026-05-18; nine certs expired together on 2026-07-12 before anyone noticed. Don't reintroduce it (Envoy is the fix), but don't repeat the reasoning either.
+- **ingress-nginx is GONE** (removed 2026-07-14, #144 phase 5.5) — namespace, IngressClass, admission webhook, and its NodeBalancer at `104.237.148.175`. There are zero `Ingress` objects in the cluster. All routing is Envoy Gateway. Don't reintroduce either.
+- **Why it had to go, and the lesson worth keeping.** ingress-nginx ran with `use-proxy-protocol: true` plus the Linode `linode-loadbalancer-proxy-protocol: v2` annotation, so it required a PROXY header on every connection — and only the Linode NodeBalancer added one. In-cluster traffic (to the LB external IP *or* the ClusterIP) is short-circuited by kube-proxy straight to the pods, never traverses the NodeBalancer, and arrives with no header. **hairpin-proxy** was the in-cluster haproxy that re-added it. Phase 1 removed hairpin-proxy on the belief that Linode LKE now does LoadBalancer hairpin natively — true, and **irrelevant**: the packets reach the backend fine, they just arrive without the header. Since cert-manager must pass an **in-cluster** HTTP-01 self-check before it will even ask Let's Encrypt to validate, that silently killed every nginx cert renewal on 2026-05-18. Nine certs expired together on 2026-07-12 before anyone noticed. The generalisable rule: **a component in the request path that requires a header only the load balancer supplies is unreachable from inside the cluster — and cert issuance depends on in-cluster reachability.**
 - **Never enable proxy protocol on Envoy.** Envoy Gateway supports it via `ClientTrafficPolicy.enableProxyProtocol`. Turning it on to recover real client IPs would recreate the exact trap above — cert-manager's self-checks would start failing against Envoy too. The cost of leaving it off is that apps see the NodeBalancer's IP rather than the client's in `x-forwarded-for`.
-- **Wildcard DNS**: `*.live.k8s.phl.io` resolves to the cluster's ingress LB, still ingress-nginx. Per-hostname A records override the wildcard as each app cuts over to Envoy. **Don't flip the wildcard as a shortcut** — it moves every hostname at once, including any whose Gateway isn't ready. Flip it (and delete the per-host records) only once every host is on Envoy. DNS is managed in OpenTofu at [CodeForPhilly/ops](https://github.com/CodeForPhilly/ops) → `tofu/dns`; a cutover is a one-line change to the host→LB map in `locals.tf`.
+- **Wildcard DNS**: `*.live.k8s.phl.io` → the Envoy LB `45.79.246.168`. DNS is managed in OpenTofu at [CodeForPhilly/ops](https://github.com/CodeForPhilly/ops) → `tofu/dns`; a host with no specific record simply follows the wildcard, so new apps need no DNS change at all.
 - **Apex domains in tree**: `balancerproject.org`, `choosenativeplants.com` (+ `www.`), `codeforphilly.org` (+ `www.`), `penn-chime.phl.io`, `vaultwarden.phl.io`, `bitwarden.phl.io`. Apex ACME challenges only work once DNS points at Envoy — plan cutover and cert issuance together for these. `choosenativeplants.com` is at **Namecheap**, not Cloud DNS, so it can't be moved from the ops repo.
-- **Expect ~60–90s of hard downtime per hostname at cutover.** The cert can't issue until DNS points at Envoy (Let's Encrypt has to reach the solver), and Envoy's HTTPS listener doesn't program until the cert Secret exists — meanwhile HTTP 301s into a listener that isn't there. Keep TTLs at 60s so rollback is fast.
+- **A new hostname is briefly down between DNS and cert.** The cert can't issue until the hostname resolves to Envoy (Let's Encrypt has to reach the solver), and Envoy's HTTPS listener doesn't program until the cert Secret exists — meanwhile HTTP 301s into a listener that isn't there. Roughly 60–90s. Keep TTLs at 60s.
 - **No cnpg / shared-cluster** on this cluster yet. If a database is needed, it ships per-app (e.g. vaultwarden runs its own PostgreSQL StatefulSet via the gissilabs chart; chime + third-places similar).
 
 ## Guardrails
