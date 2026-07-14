@@ -31,6 +31,27 @@ spec:
   hostnames:
     - third-places.live.k8s.phl.io
   rules:
-    - backendRefs:
+    # Django serves the API and admin; everything else is the frontend SPA.
+    # Gateway API matches the longest path prefix, so these win over "/" below
+    # regardless of rule order. Mirrors the Ingress this replaced — without the
+    # split, "/" lands on Django and the site 404s.
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /api/
+        - path:
+            type: PathPrefix
+            value: /admin/
+        - path:
+            type: PathPrefix
+            value: /static/admin/
+      backendRefs:
         - name: third-places
+          port: 80
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /
+      backendRefs:
+        - name: third-places-frontend
           port: 80
