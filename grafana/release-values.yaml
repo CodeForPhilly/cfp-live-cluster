@@ -13,3 +13,250 @@ grafana.ini:
     # the rendered ConfigMap: it was `domain = metrics.live.k8s.phl.io`.
     domain: metrics.live.k8s.phl.io
     root_url: https://metrics.live.k8s.phl.io
+
+  # SMTP via Postmark. The username and password are the same Postmark server
+  # token; both come from the sealed smtp-postmark Secret as env (below), so no
+  # credential is in git. This is why alerting lives in Grafana rather than
+  # Prometheus Alertmanager: Alertmanager can only read the SMTP *password* from
+  # a file, never the username, and Postmark needs both — unshippable in a
+  # public repo. Grafana reads both from the Secret. See #163.
+  smtp:
+    enabled: true
+    host: smtp.postmarkapp.com:587
+    from_address: services@codeforphilly.org
+    from_name: CFP Live Cluster
+
+# All three from the sealed grafana.secrets/smtp-postmark.yaml. ALERT_EMAIL_TO
+# is the recipient list — kept in the Secret rather than cleartext here because
+# this repo is public and two of the addresses are personal. Grafana expands
+# ${ALERT_EMAIL_TO} in the contact point below (verified on 9.2.5). Helm's tpl
+# only touches {{ }}, so ${ } passes through untouched.
+envValueFrom:
+  GF_SMTP_USER:
+    secretKeyRef:
+      name: smtp-postmark
+      key: smtp-user
+  GF_SMTP_PASSWORD:
+    secretKeyRef:
+      name: smtp-postmark
+      key: smtp-password
+  ALERT_EMAIL_TO:
+    secretKeyRef:
+      name: smtp-postmark
+      key: alert-recipients
+
+# Pin the Prometheus datasource UID so the provisioned alert rules can reference
+# it stably. This restates the datasources the blueprint provides (Prometheus +
+# Loki) because the list is replaced wholesale, not merged — if the blueprint
+# adds a datasource, add it here too.
+datasources:
+  datasources.yaml:
+    apiVersion: 1
+    datasources:
+      - name: Prometheus
+        uid: prometheus
+        type: prometheus
+        url: http://prometheus-server.prometheus.svc.cluster.local
+        isDefault: true
+      - name: Loki
+        uid: loki
+        type: loki
+        access: proxy
+        url: http://loki.loki.svc.cluster.local:3100
+        version: 1
+
+# Certificate alerting — Grafana-managed rules querying Prometheus, delivered by
+# email. This exists because of the 2026-07-12 outage (#144, #163): nine certs
+# expired at once and nobody knew for 56 days. The metrics were correct the whole
+# time; no one was watching them.
+#
+# The rules mirror the Prometheus rules proposed upstream in cluster-template#65.
+# They're duplicated here (as Grafana-managed rules) only because delivery has to
+# go through Grafana — see the SMTP note above.
+#
+# noDataState: OK and execErrState: OK are deliberate. A vanished metric (cert
+# deleted) or a transient Prometheus blip must NOT page — for a team that isn't
+# watching dashboards, a false alarm is worse than none, because the next real
+# one gets ignored. Every rule here fires only on a genuine, sustained condition.
+alerting:
+  contactpoints.yaml:
+    apiVersion: 1
+    contactPoints:
+      - orgId: 1
+        name: cert-ops-email
+        receivers:
+          - uid: cert-ops-email
+            type: email
+            settings:
+              # Recipient list from the sealed Secret (see envValueFrom above),
+              # not cleartext — public repo. Semicolon-separated.
+              addresses: "${ALERT_EMAIL_TO}"
+              singleEmail: false
+
+  policies.yaml:
+    apiVersion: 1
+    policies:
+      - orgId: 1
+        receiver: cert-ops-email
+        group_by: ["alertname", "namespace", "name"]
+        group_wait: 30s
+        group_interval: 5m
+        repeat_interval: 12h
+
+  rules.yaml:
+    apiVersion: 1
+    groups:
+      - orgId: 1
+        name: cert-manager
+        folder: Certificates
+        interval: 5m
+        rules:
+          # The one that would have caught July. A cert stays Ready=True while
+          # valid, so readiness is useless until it's too late. A renewalTime
+          # more than a day in the past means renewal is stuck — fires ~29 days
+          # before expiry, while everything still looks fine.
+          - uid: cert-renewal-overdue
+            title: CertRenewalOverdue
+            condition: C
+            for: 1h
+            noDataState: OK
+            execErrState: OK
+            labels: { severity: warning }
+            annotations:
+              summary: '{{`Certificate {{ $labels.namespace }}/{{ $labels.name }} is overdue for renewal`}}'
+              description: >-
+                renewalTime is over a day in the past and renewal hasn't happened.
+                The cert is probably still valid, so nothing looks broken yet —
+                that's exactly how the July 2026 outage stayed invisible for 56
+                days. Check `kubectl get challenges -A` for a stuck challenge.
+            data:
+              - refId: A
+                relativeTimeRange: { from: 600, to: 0 }
+                datasourceUid: prometheus
+                model:
+                  refId: A
+                  instant: true
+                  expr: time() - certmanager_certificate_renewal_timestamp_seconds
+              - refId: C
+                datasourceUid: __expr__
+                model:
+                  refId: C
+                  type: threshold
+                  expression: A
+                  conditions:
+                    - evaluator: { type: gt, params: [86400] }
+
+          # A healthy HTTP-01 challenge completes in seconds. Anything in flight
+          # for an hour is wrong; for days it's the half-orphan deadlock that
+          # caused the outage.
+          - uid: cert-challenge-stuck
+            title: CertChallengeStuck
+            condition: C
+            for: 1h
+            noDataState: OK
+            execErrState: OK
+            labels: { severity: warning }
+            annotations:
+              summary: '{{`ACME challenge stuck for {{ $labels.namespace }}/{{ $labels.name }}`}}'
+              description: >-
+                Challenge in flight for over an hour. Healthy ones resolve in
+                seconds. If its Order is gone, the Challenge is a half-orphan that
+                GC won't reap and must be deleted by name, or it starves every
+                future renewal for this hostname.
+            data:
+              - refId: A
+                relativeTimeRange: { from: 600, to: 0 }
+                datasourceUid: prometheus
+                model:
+                  refId: A
+                  instant: true
+                  expr: certmanager_certificate_challenge_status
+              - refId: C
+                datasourceUid: __expr__
+                model:
+                  refId: C
+                  type: threshold
+                  expression: A
+                  conditions:
+                    - evaluator: { type: gt, params: [0] }
+
+          - uid: cert-expiring-soon
+            title: CertExpiringSoon
+            condition: C
+            for: 1h
+            noDataState: OK
+            execErrState: OK
+            labels: { severity: warning }
+            annotations:
+              summary: '{{`Certificate {{ $labels.namespace }}/{{ $labels.name }} expires within 21 days`}}'
+              description: "Renewal starts at 30 days, so this has been failing for a week or more."
+            data:
+              - refId: A
+                relativeTimeRange: { from: 600, to: 0 }
+                datasourceUid: prometheus
+                model:
+                  refId: A
+                  instant: true
+                  expr: certmanager_certificate_expiration_timestamp_seconds - time()
+              - refId: C
+                datasourceUid: __expr__
+                model:
+                  refId: C
+                  type: threshold
+                  expression: A
+                  conditions:
+                    - evaluator: { type: lt, params: [1814400] }
+
+          - uid: cert-expiring-critical
+            title: CertExpiringCritical
+            condition: C
+            for: 10m
+            noDataState: OK
+            execErrState: OK
+            labels: { severity: critical }
+            annotations:
+              summary: '{{`Certificate {{ $labels.namespace }}/{{ $labels.name }} expires within 7 days`}}'
+              description: "Under a week to expiry. Users will see browser warnings when this lapses."
+            data:
+              - refId: A
+                relativeTimeRange: { from: 600, to: 0 }
+                datasourceUid: prometheus
+                model:
+                  refId: A
+                  instant: true
+                  expr: certmanager_certificate_expiration_timestamp_seconds - time()
+              - refId: C
+                datasourceUid: __expr__
+                model:
+                  refId: C
+                  type: threshold
+                  expression: A
+                  conditions:
+                    - evaluator: { type: lt, params: [604800] }
+
+          - uid: clusterissuer-not-ready
+            title: ClusterIssuerNotReady
+            condition: C
+            for: 15m
+            noDataState: OK
+            execErrState: OK
+            labels: { severity: critical }
+            annotations:
+              summary: '{{`ClusterIssuer {{ $labels.name }} is not Ready`}}'
+              description: "No certificate can be issued or renewed through this issuer."
+            data:
+              - refId: A
+                relativeTimeRange: { from: 600, to: 0 }
+                datasourceUid: prometheus
+                model:
+                  refId: A
+                  instant: true
+                  expr: certmanager_clusterissuer_ready_status{condition="True"}
+              - refId: C
+                datasourceUid: __expr__
+                model:
+                  refId: C
+                  type: threshold
+                  expression: A
+                  conditions:
+                    - evaluator: { type: lt, params: [1] }
