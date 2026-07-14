@@ -2,14 +2,6 @@ image:
   repository: ghcr.io/codeforphilly/chime/penn-chime
   tag: 1.1.5
 
+# Routing is handled by Envoy Gateway — see _gateways/chime.yaml.
 ingress:
-  hosts:
-    - host: penn-chime.phl.io
-      paths: [ '/' ]
-    - host: penn-chime.live.k8s.phl.io
-      paths: [ '/' ]
-  tls:
-    - secretName: penn-chime-tls
-      hosts:
-        - penn-chime.phl.io
-        - penn-chime.live.k8s.phl.io
+  enabled: false

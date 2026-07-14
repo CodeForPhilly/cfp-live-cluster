@@ -1,11 +1,15 @@
 # These values as applied last as downstream overrides
 # See https://github.com/grafana/helm-charts/blob/grafana-6.2.1/charts/grafana/values.yaml
-ingress:
 
-  enabled: true
-  hosts:
-    - metrics.live.k8s.phl.io
-  tls:
-    - secretName: grafana-tls
-      hosts:
-        - metrics.live.k8s.phl.io
+# Routing is handled by Envoy Gateway — see _gateways/grafana.yaml.
+ingress:
+  enabled: false
+
+grafana.ini:
+  server:
+    # The chart infers [server] domain from ingress.hosts[0]. With the Ingress
+    # disabled that inference is gone, so set it directly — grafana uses it to
+    # build absolute URLs (share links, alert notifications). Verified against
+    # the rendered ConfigMap: it was `domain = metrics.live.k8s.phl.io`.
+    domain: metrics.live.k8s.phl.io
+    root_url: https://metrics.live.k8s.phl.io

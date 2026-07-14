@@ -5,16 +5,8 @@ frontend:
   image:
     tag: 0.1.11
 
+# Routing is handled by Envoy Gateway — see _gateways/third-places.yaml.
+# Note the Gateway route splits /api/, /admin/, /static/admin/ to the Django
+# backend and everything else to the frontend; this Ingress did the same.
 ingress:
-  enabled: true
-  # className: nginx
-  annotations:
-    kubernetes.io/ingress.class: nginx
-    cert-manager.io/cluster-issuer: letsencrypt-prod
-  hosts:
-    - host: third-places.live.k8s.phl.io
-      paths: [ '/' ]
-  tls:
-    - secretName: third-places-tls
-      hosts:
-        - third-places.live.k8s.phl.io
+  enabled: false

@@ -1,10 +1,6 @@
 # These values as applied last as downstream overrides
 # See https://github.com/bitnami-labs/sealed-secrets/blob/main/helm/sealed-secrets/values.yaml
 
+# Routing is handled by Envoy Gateway — see _gateways/sealed-secrets.yaml.
 ingress:
-  enabled: true
-  annotations:
-    kubernetes.io/ingress.class: nginx
-    cert-manager.io/cluster-issuer: letsencrypt-prod
-  hostname: sealed-secrets.live.k8s.phl.io
-  tls: true
+  enabled: false

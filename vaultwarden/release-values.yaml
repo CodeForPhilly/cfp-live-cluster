@@ -6,16 +6,11 @@
 image:
   tag: 1.36.0
 
+# Routing is handled by Envoy Gateway — see _gateways/vaultwarden.yaml.
+# vaultwarden.domain below is set explicitly, so DOMAIN survives this.
 ingress:
-  enabled: true
-  host: vaultwarden.phl.io
-  annotations:
-    kubernetes.io/ingress.class: nginx
-    cert-manager.io/cluster-issuer: letsencrypt-prod
-  tls:
-    - secretName: vaultwarden-tls
-      hosts:
-        - vaultwarden.phl.io
+  enabled: false
+
 
 vaultwarden:
   domain: https://vaultwarden.phl.io
