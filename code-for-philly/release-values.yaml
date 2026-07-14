@@ -17,14 +17,10 @@ site:
     - name: 'saml2'
     - name: 'slack'
 
+# Routing is handled by Envoy Gateway — see _gateways/code-for-philly.yaml.
 ingress:
-  enabled: true
-  secondaryHostnames:
-    - codeforphilly.live.k8s.phl.io
-    - www.codeforphilly.org
-    # using URL Redirects at the registrar level for now:
-    # - codeforphilly.com
-    # - www.codeforphilly.com
+  enabled: false
+
 
 volumes:
   site: 10Gi
