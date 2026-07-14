@@ -21,7 +21,7 @@ spec:
   template:
     metadata:
       annotations:
-        checksum/config: 29deb4f2dc4142112725219ae1a15b3b798c13d0a802de9c9b9139162d3f8cab
+        checksum/config: 22dd3d1e146daf71250e2b773d7bc4a06eb63f0161d8209890d34b7539d4ced3
         checksum/dashboards-json-config: 4f1a6849aba728c6f66b9b27a78f020f7f74b2cb327597cec42eedc8ab62986a
         checksum/sc-dashboard-provider-config: 01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b
       labels:
@@ -49,6 +49,21 @@ spec:
               value: /var/lib/grafana/plugins
             - name: GF_PATHS_PROVISIONING
               value: /etc/grafana/provisioning
+            - name: ALERT_EMAIL_TO
+              valueFrom:
+                secretKeyRef:
+                  key: alert-recipients
+                  name: smtp-postmark
+            - name: GF_SMTP_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  key: smtp-password
+                  name: smtp-postmark
+            - name: GF_SMTP_USER
+              valueFrom:
+                secretKeyRef:
+                  key: smtp-user
+                  name: smtp-postmark
           image: grafana/grafana:9.2.5
           imagePullPolicy: IfNotPresent
           livenessProbe:
@@ -76,6 +91,15 @@ spec:
             - mountPath: /etc/grafana/provisioning/datasources/datasources.yaml
               name: config
               subPath: datasources.yaml
+            - mountPath: /etc/grafana/provisioning/alerting/contactpoints.yaml
+              name: config
+              subPath: contactpoints.yaml
+            - mountPath: /etc/grafana/provisioning/alerting/policies.yaml
+              name: config
+              subPath: policies.yaml
+            - mountPath: /etc/grafana/provisioning/alerting/rules.yaml
+              name: config
+              subPath: rules.yaml
             - mountPath: /etc/grafana/provisioning/dashboards/dashboardproviders.yaml
               name: config
               subPath: dashboardproviders.yaml
