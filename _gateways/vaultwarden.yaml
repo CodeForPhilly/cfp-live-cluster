@@ -41,8 +41,33 @@ spec:
     - name: vaultwarden
   hostnames:
     - vaultwarden.phl.io
-    - bitwarden.phl.io
   rules:
     - backendRefs:
         - name: vaultwarden
           port: 80
+---
+# bitwarden.phl.io is the legacy alias and must REDIRECT to the canonical host,
+# not serve the app. The nginx Ingress it replaced did this with
+# `nginx.ingress.kubernetes.io/permanent-redirect`; the phase-3 route dropped
+# the redirect and pointed the alias straight at the backend instead.
+#
+# That matters beyond tidiness: vaultwarden's DOMAIN is https://vaultwarden.phl.io,
+# and serving the app from a second origin breaks origin-bound auth — WebAuthn,
+# passkeys, and 2FA are all bound to the origin the credential was registered on.
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: bitwarden-redirect
+  namespace: vaultwarden
+spec:
+  parentRefs:
+    - name: vaultwarden
+  hostnames:
+    - bitwarden.phl.io
+  rules:
+    - filters:
+        - type: RequestRedirect
+          requestRedirect:
+            scheme: https
+            hostname: vaultwarden.phl.io
+            statusCode: 301
