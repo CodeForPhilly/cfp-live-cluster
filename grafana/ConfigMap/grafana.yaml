@@ -3,14 +3,14 @@ data:
   contactpoints.yaml: |
     apiVersion: 1
     contactPoints:
-    - name: cert-ops-email
+    - name: cluster-alerts-email
       orgId: 1
       receivers:
       - settings:
           addresses: ${ALERT_EMAIL_TO}
           singleEmail: false
         type: email
-        uid: cert-ops-email
+        uid: cluster-alerts-email
   dashboardproviders.yaml: |
     apiVersion: 1
     providers:
@@ -102,8 +102,7 @@ data:
     root_url = https://metrics.live.k8s.phl.io
     [smtp]
     enabled = true
-    from_address = services@codeforphilly.org
-    from_name = CFP Live Cluster
+    from_name = Cluster Monitoring
     host = smtp.postmarkapp.com:587
   policies.yaml: |
     apiVersion: 1
@@ -115,7 +114,7 @@ data:
       group_interval: 5m
       group_wait: 30s
       orgId: 1
-      receiver: cert-ops-email
+      receiver: cluster-alerts-email
       repeat_interval: 12h
   rules.yaml: |
     apiVersion: 1
@@ -127,9 +126,9 @@ data:
       rules:
       - annotations:
           description: renewalTime is over a day in the past and renewal hasn't happened.
-            The cert is probably still valid, so nothing looks broken yet — that's exactly
-            how the July 2026 outage stayed invisible for 56 days. Check `kubectl get
-            challenges -A` for a stuck challenge.
+            The cert is probably still valid, so nothing looks broken yet — which is exactly
+            how this failure mode hides. Check `kubectl get challenges -A` for a stuck
+            challenge.
           summary: 'Certificate {{ $labels.namespace }}/{{ $labels.name }} is overdue
             for renewal'
         condition: C
@@ -163,8 +162,8 @@ data:
         uid: cert-renewal-overdue
       - annotations:
           description: Challenge in flight for over an hour. Healthy ones resolve in seconds.
-            If its Order is gone, the Challenge is a half-orphan that GC won't reap and
-            must be deleted by name, or it starves every future renewal for this hostname.
+            If its Order is gone it must be deleted by name, or it starves every future
+            renewal for this hostname.
           summary: 'ACME challenge stuck for {{ $labels.namespace }}/{{ $labels.name
             }}'
         condition: C
