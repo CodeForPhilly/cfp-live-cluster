@@ -14,11 +14,13 @@ spec:
     storageClass: linode-block-storage-retain
     size: 20Gi
 
-  # No `managed.roles` yet: the balancer role's passwordSecret has to be sealed
-  # into cloudnative-pg.secrets/ first, and cnpg reports a role reconcile error
-  # for as long as the Secret it names is absent. The role and the balancer
-  # Database CR land together in the follow-up PR.
-  #
-  # No `backup:` stanza yet either — it needs an object store bucket plus
+  managed:
+    roles:
+      - name: balancer
+        login: true
+        passwordSecret:
+          name: balancer-db-credentials
+
+  # No `backup:` stanza yet — it needs an object store bucket plus
   # credentials that do not exist. This cluster must not hold the only copy of
   # production data until that lands. See CodeForPhilly/balancer-main#526.

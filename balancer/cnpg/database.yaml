@@ -1,0 +1,16 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Database
+metadata:
+  name: balancer
+  namespace: cloudnative-pg
+spec:
+  name: balancer
+  owner: balancer
+  cluster:
+    name: shared-cluster
+  # Django's api.0005_embeddings migration creates a vector(384) column.
+  # cnpg-controller runs CREATE EXTENSION as the postgres superuser; the
+  # `balancer` role has no superuser perms and cannot enable extensions itself.
+  extensions:
+    - name: vector
+      ensure: present
