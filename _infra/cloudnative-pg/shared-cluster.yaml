@@ -14,10 +14,16 @@ spec:
     storageClass: linode-block-storage-retain
     size: 20Gi
 
-  # No `managed.roles` yet: the balancer role's passwordSecret has to be sealed
-  # into cloudnative-pg.secrets/ first, and cnpg reports a role reconcile error
-  # for as long as the Secret it names is absent. The role and the balancer
-  # Database CR land together in the follow-up PR.
+  # Roles are managed here (not via the 1.30 DatabaseRole CRD) to match
+  # cfp-sandbox-cluster. Each role's passwordSecret is sealed in
+  # cloudnative-pg.secrets/ and must exist before the role is declared, or
+  # cnpg reports a role reconcile error until it does.
+  managed:
+    roles:
+      - name: balancer
+        login: true
+        passwordSecret:
+          name: balancer-db-credentials
 
   # Backups: WAL archiving + nightly base backups to GCS (off-Linode) via
   # the Barman Cloud plugin. See backups.yaml for the ObjectStore + schedule.
