@@ -140,7 +140,7 @@ Things not in any single grep-able file:
 - **Wildcard DNS**: `*.live.k8s.phl.io` → the Envoy LB `45.79.246.168`. DNS is managed in OpenTofu at [CodeForPhilly/ops](https://github.com/CodeForPhilly/ops) → `tofu/dns`; a host with no specific record simply follows the wildcard, so new apps need no DNS change at all.
 - **Apex domains in tree**: `balancerproject.org`, `choosenativeplants.com` (+ `www.`), `codeforphilly.org` (+ `www.`), `penn-chime.phl.io`, `vaultwarden.phl.io`, `bitwarden.phl.io`. Apex ACME challenges only work once DNS points at Envoy — plan cutover and cert issuance together for these. `choosenativeplants.com` is at **Namecheap**, not Cloud DNS, so it can't be moved from the ops repo.
 - **A new hostname is briefly down between DNS and cert.** The cert can't issue until the hostname resolves to Envoy (Let's Encrypt has to reach the solver), and Envoy's HTTPS listener doesn't program until the cert Secret exists — meanwhile HTTP 301s into a listener that isn't there. Roughly 60–90s. Keep TTLs at 60s.
-- **No cnpg / shared-cluster** on this cluster yet. If a database is needed, it ships per-app (e.g. vaultwarden runs its own PostgreSQL StatefulSet via the gissilabs chart; chime + third-places similar).
+- **cnpg is landing.** `_infra/cloudnative-pg/` installs the operator (chart v0.28.0) and a `shared-cluster` Cluster, mirroring cfp-sandbox-cluster. It has **no backup configuration** — do not let it hold the only copy of anything until an object store lands (CodeForPhilly/balancer-main#526). Existing apps still ship their own database per-app (vaultwarden runs a PostgreSQL StatefulSet via the gissilabs chart; chime + third-places similar); nothing has been migrated onto the shared cluster yet.
 
 ## Guardrails
 
