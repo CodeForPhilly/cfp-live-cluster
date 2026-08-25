@@ -11,5 +11,19 @@ files = [
     # from a now-empty input tree.
     "!ingress-nginx/**",
     "!.holo/lenses/ingress-nginx.toml",
+
+    # certgen.yaml is a Helm `pre-install,pre-upgrade` hook Job that generates
+    # the envoy-gateway webhook certs. `helm template` emits hooks like any
+    # other manifest (the helm3 lens has no --no-hooks), so it lands in the
+    # projection and gets kubectl-applied on every deploy.
+    #
+    # It carries `ttlSecondsAfterFinished: 30`, so it deletes itself moments
+    # after running. `kubectl diff` therefore reports it as a fresh creation in
+    # EVERY deploy PR, which buries real changes in recurring noise.
+    #
+    # Dropping the template excludes the Job while leaving certgen-rbac.yaml in
+    # place, so re-enabling it is a one-line revert. The certs it generated are
+    # valid until 2031-05-17 and it does not rotate existing ones.
+    "!envoy-gateway/helm-chart/templates/certgen.yaml",
 ]
 before = "*"
