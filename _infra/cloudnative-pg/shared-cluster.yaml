@@ -1,0 +1,26 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: shared-cluster
+  namespace: cloudnative-pg
+spec:
+  instances: 2
+  imageName: ghcr.io/cloudnative-pg/postgis:18-3-system-trixie
+
+  storage:
+    # Explicit, unlike sandbox, which takes the cluster default. `-retain` keeps
+    # the Linode volume if the PVC is ever deleted — on this cluster that is the
+    # difference between an incident and an outage.
+    storageClass: linode-block-storage-retain
+    size: 20Gi
+
+  managed:
+    roles:
+      - name: balancer
+        login: true
+        passwordSecret:
+          name: balancer-db-credentials
+
+  # No `backup:` stanza yet — it needs an object store bucket plus
+  # credentials that do not exist. This cluster must not hold the only copy of
+  # production data until that lands. See CodeForPhilly/balancer-main#526.
