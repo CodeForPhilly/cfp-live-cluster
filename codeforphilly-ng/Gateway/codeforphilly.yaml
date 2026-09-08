@@ -1,0 +1,21 @@
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod-gateway
+  name: codeforphilly
+  namespace: codeforphilly-ng
+spec:
+  gatewayClassName: eg
+  listeners:
+    - allowedRoutes:
+        namespaces:
+          from: Same
+      hostname: next.codeforphilly.org
+      name: https-next
+      port: 443
+      protocol: HTTPS
+      tls:
+        certificateRefs:
+          - name: next-codeforphilly-org-gw-tls
+        mode: Terminate
