@@ -1,0 +1,54 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+# codeforphilly-ng — the codeforphilly.org rewrite (Fastify + React + gitsheets).
+# Production deployment. Runs alongside the legacy laddr app in `code-for-philly`
+# until cutover, which is a hostname move in _gateways/ (no DNS change: the apex
+# already resolves to this cluster's Envoy gateway).
+#
+# Upstream manifests are projected from codeforphilly-ng:deploy/kustomize/base
+# at the tag pinned in .holo/sources/codeforphilly-ng.toml. Bump that ref and
+# the image tag below together on each release.
+namespace: codeforphilly-ng
+
+resources:
+  - namespace.yaml
+  - manifests/configmap.yaml
+  - manifests/deployment.yaml
+  - manifests/service.yaml
+  - manifests/serviceaccount.yaml
+  - manifests/pvc-private.yaml
+
+images:
+  - name: ghcr.io/codeforphilly/codeforphilly-ng
+    newTag: v0.1.0
+
+patches:
+  # Pre-cutover public host. Flip to codeforphilly.org in the same commit that
+  # moves the apex listener in _gateways/codeforphilly-ng.yaml.
+  - target:
+      version: v1
+      kind: ConfigMap
+      name: codeforphilly-env
+    patch: |
+      - op: replace
+        path: /data/CFP_SITE_HOST
+        value: next.codeforphilly.org
+  # Release tags are immutable; don't re-pull on every pod start.
+  - target:
+      group: apps
+      version: v1
+      kind: Deployment
+      name: codeforphilly
+    patch: |
+      - op: replace
+        path: /spec/template/spec/containers/0/imagePullPolicy
+        value: IfNotPresent
+      # Second env Secret carrying the SAML IdP key pair carried over from the
+      # legacy laddr `saml2` secret (see codeforphilly-ng.secrets/).
+      - op: add
+        path: /spec/template/spec/containers/0/envFrom/-
+        value:
+          secretRef:
+            name: codeforphilly-saml
+            optional: true
