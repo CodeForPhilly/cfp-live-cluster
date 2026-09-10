@@ -3,4 +3,4 @@ url = "https://github.com/CodeForPhilly/codeforphilly-ng.git"
 
 # Pinned to a release tag, never a branch (same rule as balancer). Bump this
 # and codeforphilly-ng/app/kustomization.yaml's image tag together per release.
-ref = "refs/tags/v0.2.0"
+ref = "refs/tags/v0.2.1"
