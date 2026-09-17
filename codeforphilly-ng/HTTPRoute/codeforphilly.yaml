@@ -5,6 +5,8 @@ metadata:
   namespace: codeforphilly-ng
 spec:
   hostnames:
+    - codeforphilly.org
+    - www.codeforphilly.org
     - next.codeforphilly.org
   parentRefs:
     - name: codeforphilly

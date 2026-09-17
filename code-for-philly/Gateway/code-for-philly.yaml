@@ -11,28 +11,6 @@ spec:
     - allowedRoutes:
         namespaces:
           from: Same
-      hostname: codeforphilly.org
-      name: https-apex
-      port: 443
-      protocol: HTTPS
-      tls:
-        certificateRefs:
-          - name: codeforphilly-org-gw-tls
-        mode: Terminate
-    - allowedRoutes:
-        namespaces:
-          from: Same
-      hostname: www.codeforphilly.org
-      name: https-www
-      port: 443
-      protocol: HTTPS
-      tls:
-        certificateRefs:
-          - name: www-codeforphilly-org-gw-tls
-        mode: Terminate
-    - allowedRoutes:
-        namespaces:
-          from: Same
       hostname: codeforphilly.live.k8s.phl.io
       name: https-subdomain
       port: 443
