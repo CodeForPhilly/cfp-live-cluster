@@ -24,8 +24,9 @@ images:
     newTag: v0.2.2
 
 patches:
-  # Pre-cutover public host. Flip to codeforphilly.org in the same commit that
-  # moves the apex listener in _gateways/codeforphilly-ng.yaml.
+  # Public host. Flipped from next.codeforphilly.org in the same commit that
+  # moved the apex listener in _gateways/codeforphilly-ng.yaml; drives the SAML
+  # SSO endpoint Locations and rendered external links.
   - target:
       version: v1
       kind: ConfigMap
@@ -33,7 +34,7 @@ patches:
     patch: |
       - op: replace
         path: /data/CFP_SITE_HOST
-        value: next.codeforphilly.org
+        value: codeforphilly.org
   # Release tags are immutable; don't re-pull on every pod start.
   - target:
       group: apps
