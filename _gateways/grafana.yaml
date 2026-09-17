@@ -34,3 +34,23 @@ spec:
     - backendRefs:
         - name: grafana
           port: 80
+---
+# Accept the PROXY protocol header the NodeBalancer adds so Envoy sees the
+# real client address (and puts it in X-Forwarded-For). One identical policy
+# per Gateway: with mergeGateways the filter is set per port from whichever
+# merged listener carries it, so attaching it everywhere is deterministic.
+# `optional: true` keeps connections WITHOUT a header working — in-cluster
+# traffic (cert-manager's HTTP-01 self-check, anything hitting the LB IP from
+# inside) never traverses the NodeBalancer. See #201 and the July incident.
+apiVersion: gateway.envoyproxy.io/v1alpha1
+kind: ClientTrafficPolicy
+metadata:
+  name: proxy-protocol
+  namespace: grafana
+spec:
+  targetRefs:
+    - group: gateway.networking.k8s.io
+      kind: Gateway
+      name: grafana
+  proxyProtocol:
+    optional: true

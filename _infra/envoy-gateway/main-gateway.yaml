@@ -15,3 +15,17 @@ spec:
       allowedRoutes:
         namespaces:
           from: All
+---
+# See _gateways/*.yaml — same policy for the shared :80 listener.
+apiVersion: gateway.envoyproxy.io/v1alpha1
+kind: ClientTrafficPolicy
+metadata:
+  name: proxy-protocol
+  namespace: envoy-gateway-system
+spec:
+  targetRefs:
+    - group: gateway.networking.k8s.io
+      kind: Gateway
+      name: main-gateway
+  proxyProtocol:
+    optional: true
