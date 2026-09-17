@@ -8,10 +8,32 @@ metadata:
 spec:
   gatewayClassName: eg
   listeners:
-    # Pre-cutover host. At cutover, move the `codeforphilly.org` and
-    # `www.codeforphilly.org` listeners here from _gateways/code-for-philly.yaml
-    # (and the matching HTTPRoute hostnames below) in one commit. Rollback is a
-    # revert of that commit.
+    # Production hostnames for the codeforphilly.org rewrite. The apex and www
+    # listeners moved here from _gateways/code-for-philly.yaml at cutover;
+    # rollback is a revert of that commit. `next.` stays as a secondary host.
+    # Cert Secrets for apex/www are pre-issued by the Certificates below.
+    - name: https-apex
+      protocol: HTTPS
+      port: 443
+      hostname: codeforphilly.org
+      tls:
+        mode: Terminate
+        certificateRefs:
+          - name: codeforphilly-org-gw-tls
+      allowedRoutes:
+        namespaces:
+          from: Same
+    - name: https-www
+      protocol: HTTPS
+      port: 443
+      hostname: www.codeforphilly.org
+      tls:
+        mode: Terminate
+        certificateRefs:
+          - name: www-codeforphilly-org-gw-tls
+      allowedRoutes:
+        namespaces:
+          from: Same
     - name: https-next
       protocol: HTTPS
       port: 443
@@ -33,6 +55,8 @@ spec:
   parentRefs:
     - name: codeforphilly
   hostnames:
+    - codeforphilly.org
+    - www.codeforphilly.org
     - next.codeforphilly.org
   rules:
     - matches:

@@ -8,28 +8,6 @@ metadata:
 spec:
   gatewayClassName: eg
   listeners:
-    - name: https-apex
-      protocol: HTTPS
-      port: 443
-      hostname: codeforphilly.org
-      tls:
-        mode: Terminate
-        certificateRefs:
-          - name: codeforphilly-org-gw-tls
-      allowedRoutes:
-        namespaces:
-          from: Same
-    - name: https-www
-      protocol: HTTPS
-      port: 443
-      hostname: www.codeforphilly.org
-      tls:
-        mode: Terminate
-        certificateRefs:
-          - name: www-codeforphilly-org-gw-tls
-      allowedRoutes:
-        namespaces:
-          from: Same
     - name: https-subdomain
       protocol: HTTPS
       port: 443
@@ -51,8 +29,6 @@ spec:
   parentRefs:
     - name: code-for-philly
   hostnames:
-    - codeforphilly.org
-    - www.codeforphilly.org
     - codeforphilly.live.k8s.phl.io
   rules:
     - backendRefs:
