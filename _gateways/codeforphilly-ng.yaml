@@ -42,3 +42,56 @@ spec:
       backendRefs:
         - name: codeforphilly
           port: 80
+---
+# Apex + www TLS, pre-issued ahead of the cutover.
+#
+# `mergeGateways: true` (see _infra/envoy-gateway/envoyproxy.yaml) means a
+# hostname can be attached to only one :443 listener across the whole cluster,
+# so the cutover commit has to detach codeforphilly.org from the legacy gateway
+# and attach it here in one step. If the cert Secret doesn't exist yet at that
+# moment, the new listener sits un-Programmed while ACME runs and the apex
+# serves TLS errors for the duration.
+#
+# These Certificates are therefore declared explicitly, ahead of the flip, so
+# the Secrets are already in place when the listeners move and the new listener
+# is Programmed immediately. Names match the `certificateRefs` the cutover adds
+# below, which is also what cert-manager's gateway-shim would name them.
+#
+# Deliberately NO `acme.cert-manager.io/http01-parentrefkind/-name` annotations:
+# the shim points challenges at the Gateway owning the cert, which here has no
+# apex listener yet. Falling through to the ClusterIssuer's default parentRef
+# (main-gateway, whose :80 listener matches every hostname) is what lets these
+# validate before the flip.
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: codeforphilly-org-gw-tls
+  namespace: codeforphilly-ng
+spec:
+  dnsNames:
+    - codeforphilly.org
+  issuerRef:
+    group: cert-manager.io
+    kind: ClusterIssuer
+    name: letsencrypt-prod-gateway
+  secretName: codeforphilly-org-gw-tls
+  usages:
+    - digital signature
+    - key encipherment
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: www-codeforphilly-org-gw-tls
+  namespace: codeforphilly-ng
+spec:
+  dnsNames:
+    - www.codeforphilly.org
+  issuerRef:
+    group: cert-manager.io
+    kind: ClusterIssuer
+    name: letsencrypt-prod-gateway
+  secretName: www-codeforphilly-org-gw-tls
+  usages:
+    - digital signature
+    - key encipherment
