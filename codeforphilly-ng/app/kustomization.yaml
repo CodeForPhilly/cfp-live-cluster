@@ -21,7 +21,7 @@ resources:
 
 images:
   - name: ghcr.io/codeforphilly/codeforphilly-ng
-    newTag: v0.5.0
+    newTag: v0.5.1
 
 patches:
   # Public host. Flipped from next.codeforphilly.org in the same commit that
