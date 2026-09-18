@@ -1,0 +1,12 @@
+apiVersion: gateway.envoyproxy.io/v1alpha1
+kind: ClientTrafficPolicy
+metadata:
+  name: proxy-protocol
+  namespace: echo-http
+spec:
+  proxyProtocol:
+    optional: true
+  targetRefs:
+    - group: gateway.networking.k8s.io
+      kind: Gateway
+      name: echo-http

@@ -5,3 +5,9 @@ metadata:
   namespace: envoy-gateway-system
 spec:
   mergeGateways: true
+  provider:
+    kubernetes:
+      envoyService:
+        annotations:
+          service.beta.kubernetes.io/linode-loadbalancer-proxy-protocol: v2
+    type: Kubernetes
