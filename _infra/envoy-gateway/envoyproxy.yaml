@@ -8,3 +8,13 @@ spec:
   # data-plane Deployment + one LoadBalancer. Keeps cost flat regardless
   # of how many Gateway resources exist on the cluster.
   mergeGateways: true
+  # Ask the Linode NodeBalancer to prepend a PROXY v2 header on every
+  # connection so Envoy can recover the client address. Every listener accepts
+  # the header optionally (ClientTrafficPolicy `proxy-protocol` in each Gateway
+  # namespace), so this is safe to apply in either order.
+  provider:
+    type: Kubernetes
+    kubernetes:
+      envoyService:
+        annotations:
+          service.beta.kubernetes.io/linode-loadbalancer-proxy-protocol: v2
