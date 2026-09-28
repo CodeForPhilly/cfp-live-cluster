@@ -18,7 +18,11 @@ spec:
   # into cloudnative-pg.secrets/ first, and cnpg reports a role reconcile error
   # for as long as the Secret it names is absent. The role and the balancer
   # Database CR land together in the follow-up PR.
-  #
-  # No `backup:` stanza yet either — it needs an object store bucket plus
-  # credentials that do not exist. This cluster must not hold the only copy of
-  # production data until that lands. See CodeForPhilly/balancer-main#526.
+
+  # Backups: WAL archiving + nightly base backups to Linode Object Storage via
+  # the Barman Cloud plugin. See backups.yaml for the ObjectStore + schedule.
+  plugins:
+    - name: barman-cloud.cloudnative-pg.io
+      isWALArchiver: true
+      parameters:
+        barmanObjectName: linode-cnpg
