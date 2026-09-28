@@ -6,6 +6,12 @@ metadata:
 spec:
   imageName: ghcr.io/cloudnative-pg/postgis:18-3-system-trixie
   instances: 2
+  managed:
+    roles:
+      - login: true
+        name: balancer
+        passwordSecret:
+          name: balancer-db-credentials
   plugins:
     - isWALArchiver: true
       name: barman-cloud.cloudnative-pg.io
