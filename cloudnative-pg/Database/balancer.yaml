@@ -1,0 +1,13 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Database
+metadata:
+  name: balancer
+  namespace: cloudnative-pg
+spec:
+  cluster:
+    name: shared-cluster
+  extensions:
+    - ensure: present
+      name: vector
+  name: balancer
+  owner: balancer
