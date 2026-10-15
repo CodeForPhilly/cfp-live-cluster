@@ -21,7 +21,7 @@ resources:
 
 images:
   - name: ghcr.io/codeforphilly/codeforphilly-ng
-    newTag: v0.10.1
+    newTag: v0.10.3
 
 patches:
   # Public host. Flipped from next.codeforphilly.org in the same commit that
@@ -35,6 +35,12 @@ patches:
       - op: replace
         path: /data/CFP_SITE_HOST
         value: codeforphilly.org
+      # The daily scheduled spam purge runs in production only: sandbox and
+      # production share `published`, so a second sweeping pod would be a
+      # second destructive writer (codeforphilly-ng #255).
+      - op: add
+        path: /data/CFP_SCHEDULED_PURGE
+        value: "true"
   # Release tags are immutable; don't re-pull on every pod start.
   - target:
       group: apps
