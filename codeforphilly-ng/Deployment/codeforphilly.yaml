@@ -27,7 +27,7 @@ spec:
             - secretRef:
                 name: codeforphilly-saml
                 optional: true
-          image: ghcr.io/codeforphilly/codeforphilly-ng:v0.7.1
+          image: ghcr.io/codeforphilly/codeforphilly-ng:v0.8.0
           imagePullPolicy: IfNotPresent
           livenessProbe:
             httpGet:
