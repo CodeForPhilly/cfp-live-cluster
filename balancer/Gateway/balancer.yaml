@@ -19,3 +19,14 @@ spec:
         certificateRefs:
           - name: balancer-gw-tls
         mode: Terminate
+    - allowedRoutes:
+        namespaces:
+          from: Same
+      hostname: www.balancerproject.org
+      name: https-www
+      port: 443
+      protocol: HTTPS
+      tls:
+        certificateRefs:
+          - name: www-balancerproject-org-gw-tls
+        mode: Terminate
