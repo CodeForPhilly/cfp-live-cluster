@@ -46,6 +46,7 @@ Cluster-scoped resources land in `_/<Kind>/<name>.yaml`.
 | `_admins/`, `_docs/` | Admin RBAC + docs source (workload dirs stay bare) |
 | `<app>/` | App workspace — `release-values.yaml` for helm, `kustomization.yaml` for kustomize |
 | `<app>.secrets/` | SealedSecrets for that namespace |
+| `<app>.cnpg/` | The app's `DatabaseRole` + `Database` on `shared-cluster` (raw manifests, `namespace: cloudnative-pg`). Sibling dir because `<app>/` is the lens input; a kustomize app may use `<app>/cnpg/` instead (balancer does) |
 | `echo-http.yaml` | Raw Namespace+Deployment+Service for the echo-http probe (routing via `_gateways/echo-http.yaml`) |
 | `.holo/sources/` | Holosource pins (URL + ref) |
 | `.holo/branches/<branch>/` | Holomappings — source content → workspace path |
@@ -79,6 +80,17 @@ Only one pair exists: `letsencrypt-{prod,staging}-gateway` (gatewayHTTPRoute sol
 The nginx-solver pair (`letsencrypt-{prod,staging}`, formerly `cert-manager.issuers.yaml` at the repo root) was **deleted** in phase 6 of #144, along with ingress-nginx itself. Don't recreate them. They were a footgun long before they were removed: with ingress-nginx unreachable in-cluster (proxy-protocol — see Cluster context), they could not issue a certificate, yet they still looked perfectly usable. During the July 2026 incident an attempt to "fix" stuck certs by repointing Gateways at `letsencrypt-prod` cost hours — every challenge sat unschedulable, because cert-manager's self-check runs *in-cluster*, where nginx could never answer.
 
 The only way to fix a stuck cert is to make the hostname reachable on the path its solver actually uses.
+
+### Database resources (cnpg)
+
+The shared `cloudnative-pg/Cluster/shared-cluster` is the only PostgreSQL cluster (PG 18 + PostGIS + pgvector, backups to GCS). Tenant guide for humans: `_docs/guides/` (start at `README.md`). To add a database:
+
+- `<app>.cnpg/role.yaml` — a `DatabaseRole` (cnpg ≥ 1.30): the app's Postgres user. `passwordSecret: <app>-db-credentials`, `connectionLimit: 20`, `databaseRoleReclaimPolicy: retain`.
+- `<app>.cnpg/database.yaml` — a `Database` owned by that role; extensions declared here (the role is not a superuser).
+- Both carry `namespace: cloudnative-pg` (cnpg requires same-namespace as the Cluster; not configurable). k8s-normalize routes them there.
+- Seal `<app>-db-credentials` (basic-auth: `username` + `password`) **twice** from one password: `cloudnative-pg.secrets/` for cnpg, `<app>.secrets/` for the app.
+- **Never add `managed.roles` to `shared-cluster.yaml`** — that file is shared infra and must not change per tenant.
+- A `Database` applied in the same deploy as its `DatabaseRole` can reconcile first and report `role does not exist`; it retries on its own within a minute.
 
 ### Envoy Gateway
 
