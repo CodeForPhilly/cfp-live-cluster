@@ -26,9 +26,12 @@ volumes:
   site: 10Gi
   database: 50Gi
 
+# Backups off since 2026-10-17: this is the legacy site, kept reachable at its
+# non-production hostname after codeforphilly-ng replaced it. Nothing here
+# changes anymore. The last restic snapshots (codeforphilly-restic bucket,
+# us-southeast) are from 2026-10-17 if it ever needs restoring.
 backups:
-  enabled: true
-  snitchUrl: "https://nosnch.in/7083177ce3"
+  enabled: false
 
 hab:
   license: accept-no-persist
