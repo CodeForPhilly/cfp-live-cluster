@@ -31,6 +31,41 @@ spec:
       allowedRoutes:
         namespaces:
           from: Same
+    # www has had a CNAME to the apex all along but no listener here, so HTTPS
+    # on it failed. The redirect route below sends it to the apex.
+    - name: https-www
+      protocol: HTTPS
+      port: 443
+      hostname: www.balancerproject.org
+      tls:
+        mode: Terminate
+        certificateRefs:
+          - name: www-balancerproject-org-gw-tls
+      allowedRoutes:
+        namespaces:
+          from: Same
+---
+# www -> apex redirect. This is the one HTTPRoute that belongs here rather than
+# in balancer-main: it is about where the app is reachable, not what it serves,
+# and it has no backend to drift. It names its hostname, so it beats the app's
+# hostname-less route for www only (Gateway API: more specific hostname wins).
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: balancer-www-redirect
+  namespace: balancer
+spec:
+  parentRefs:
+    - name: balancer
+      sectionName: https-www
+  hostnames:
+    - www.balancerproject.org
+  rules:
+    - filters:
+        - type: RequestRedirect
+          requestRedirect:
+            hostname: balancerproject.org
+            statusCode: 301
 ---
 # Accept the PROXY protocol header the NodeBalancer adds so Envoy sees the
 # real client address (and puts it in X-Forwarded-For). One identical policy
