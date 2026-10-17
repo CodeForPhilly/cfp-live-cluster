@@ -1,4 +1,13 @@
 [holomapping]
 holosource = "balancer"
 root = "deploy/manifests/balancer/base"
-files = "**"
+files = [
+    "namespace.yaml",
+    "deployment.yaml",
+    "service.yaml",
+    "httproute.yaml",
+]
+# Excluded from balancer-main base/:
+#   - kustomization.yaml — we compose our own at balancer/app/kustomization.yaml
+#   - balancer.env — upstream ships it empty; ours carries the cnpg connection
+#   - secret.template.yaml — informational only, not deployable

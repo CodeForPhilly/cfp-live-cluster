@@ -25,22 +25,31 @@ images:
   - name: ghcr.io/codeforphilly/balancer-main/app
     newTag: "1.1.5"
 
-# v1.1.7's Deployment does `envFrom: configMapRef: balancer-config` alongside the
-# existing `secretRef: balancer-config` (our SealedSecret, holding SECRET_KEY,
-# SQL_*, and the API keys). A ConfigMap and a Secret may share a name.
-#
-# balancer.env is empty upstream, and the app reads ALLOWED_HOSTS rather than
-# HOSTNAME — so this ConfigMap carries nothing. It exists solely so configMapRef
-# resolves; without it the pods fail with CreateContainerConfigError.
+# v1.1.7's Deployment does `envFrom: configMapRef: balancer-config` alongside
+# `secretRef: balancer-config` (our SealedSecret). A ConfigMap and a Secret may
+# share a name. The ConfigMap is listed second, so its keys win on overlap.
+# balancer.env (ours, not upstream's empty one) carries the cnpg connection
+# settings; the Secret keeps only SECRET_KEY, SQL_PASSWORD and the API keys.
 configMapGenerator:
   - name: balancer-config
     envs:
-      - manifests/balancer.env
+      - balancer.env
 
 generatorOptions:
   disableNameSuffixHash: true
 
 patches:
+  # disableNameSuffixHash keeps the ConfigMap name stable, which also means a
+  # changed ConfigMap does not roll the pod by itself. Bump this annotation
+  # whenever balancer.env or the SealedSecret changes and the app must restart.
+  - target:
+      kind: Deployment
+      name: balancer
+    patch: |-
+      - op: add
+        path: /spec/template/metadata/annotations
+        value:
+          cfp.io/config-revision: "2026-10-cnpg-cutover"
   - target:
       kind: Namespace
       name: balancer
