@@ -50,6 +50,18 @@ patches:
         path: /spec/template/metadata/annotations
         value:
           cfp.io/config-revision: "2026-10-cnpg-cutover"
+  # The image's CMD is `runserver ... --noreload`. With DEBUG off (balancer.env)
+  # Django's dev server no longer serves /static/, which is where the SPA
+  # bundle and the admin CSS live, so the site renders blank. --insecure keeps
+  # static serving on. The real fix is whitenoise (or a proper WSGI server) in
+  # balancer-main; this patch goes away when that lands.
+  - target:
+      kind: Deployment
+      name: balancer
+    patch: |-
+      - op: add
+        path: /spec/template/spec/containers/0/args
+        value: ["python", "manage.py", "runserver", "0.0.0.0:8000", "--noreload", "--insecure"]
   - target:
       kind: Namespace
       name: balancer
