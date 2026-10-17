@@ -8,31 +8,31 @@
       
       
       
-        <link rel="canonical" href="https://codeforphilly.github.io/cfp-live-cluster/guides/connect-your-app/">
+        <link rel="canonical" href="https://codeforphilly.github.io/cfp-live-cluster/guides/database/provision/">
       
       
-        <link rel="prev" href="../add-a-database/">
+        <link rel="prev" href="../">
       
       
-        <link rel="next" href="../data-and-backups/">
+        <link rel="next" href="../connect/">
       
       
         
       
       
-      <link rel="icon" href="../../assets/images/favicon.png">
+      <link rel="icon" href="../../../assets/images/favicon.png">
       <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
     
     
       
-        <title>Connect your app - Philly Civic Cloud</title>
+        <title>Provision a database - Philly Civic Cloud</title>
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.ec1eaa64.min.css">
       
         
-        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.ab4e12ef.min.css">
       
       
 
@@ -51,7 +51,7 @@
       
     
     
-    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
 
@@ -74,7 +74,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#connect-your-app" class="md-skip">
+        <a href="#provision-a-database" class="md-skip">
           Skip to content
         </a>
       
@@ -88,7 +88,7 @@
 
 <header class="md-header" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href="../.." title="Philly Civic Cloud" class="md-header__button md-logo" aria-label="Philly Civic Cloud" data-md-component="logo">
+    <a href="../../.." title="Philly Civic Cloud" class="md-header__button md-logo" aria-label="Philly Civic Cloud" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
@@ -108,7 +108,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Connect your app
+              Provision a database
             
           </span>
         </div>
@@ -193,7 +193,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="../.." class="md-tabs__link">
+      <a href="../../.." class="md-tabs__link">
         
   
   
@@ -216,7 +216,7 @@
     
     
       <li class="md-tabs__item md-tabs__item--active">
-        <a href="../" class="md-tabs__link">
+        <a href="../../" class="md-tabs__link">
           
   
   
@@ -236,7 +236,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../../getting-started/" class="md-tabs__link">
+        <a href="../../../getting-started/" class="md-tabs__link">
           
   
   
@@ -256,7 +256,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../../development/" class="md-tabs__link">
+        <a href="../../../development/" class="md-tabs__link">
           
   
   
@@ -276,7 +276,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../../operations/" class="md-tabs__link">
+        <a href="../../../operations/" class="md-tabs__link">
           
   
   
@@ -310,7 +310,7 @@
 
 <nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="../.." title="Philly Civic Cloud" class="md-nav__button md-logo" aria-label="Philly Civic Cloud" data-md-component="logo">
+    <a href="../../.." title="Philly Civic Cloud" class="md-nav__button md-logo" aria-label="Philly Civic Cloud" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
@@ -340,7 +340,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../.." class="md-nav__link">
+      <a href="../../.." class="md-nav__link">
         
   
   
@@ -422,7 +422,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../" class="md-nav__link">
+      <a href="../../" class="md-nav__link">
         
   
   
@@ -450,7 +450,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../how-deploys-work/" class="md-nav__link">
+      <a href="../../how-deploys-work/" class="md-nav__link">
         
   
   
@@ -478,7 +478,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../your-project-in-the-repo/" class="md-nav__link">
+      <a href="../../your-project-in-the-repo/" class="md-nav__link">
         
   
   
@@ -503,17 +503,69 @@
                 
   
   
+    
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_4" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_2_4" id="__nav_2_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Shared PostgreSQL
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_4_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Shared PostgreSQL
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
   
   
     <li class="md-nav__item">
-      <a href="../add-a-database/" class="md-nav__link">
+      <a href="../" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Add a database
+    Shared PostgreSQL
   
 
     
@@ -550,7 +602,7 @@
   <span class="md-ellipsis">
     
   
-    Connect your app
+    Provision a database
   
 
     
@@ -568,7 +620,7 @@
   <span class="md-ellipsis">
     
   
-    Connect your app
+    Provision a database
   
 
     
@@ -594,10 +646,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#helm-apps" class="md-nav__link">
+  <a href="#1-one-password-sealed-twice" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Helm apps
+        1. One password, sealed twice
       
     </span>
   </a>
@@ -605,10 +657,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#kustomize-apps" class="md-nav__link">
+  <a href="#2-the-user-paws-data-pipelinecnpgroleyaml" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Kustomize apps
+        2. The user: paws-data-pipeline.cnpg/role.yaml
       
     </span>
   </a>
@@ -616,10 +668,21 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#order-of-operations" class="md-nav__link">
+  <a href="#3-the-database-paws-data-pipelinecnpgdatabaseyaml" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Order of operations
+        3. The database: paws-data-pipeline.cnpg/database.yaml
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-open-the-pr" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Open the PR
       
     </span>
   </a>
@@ -630,6 +693,34 @@
   
 </nav>
       
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../connect/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Connect your app to the database
+  
+
+    
+  </span>
+  
+  
+
+      </a>
     </li>
   
 
@@ -663,6 +754,14 @@
 
               
             
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
               
                 
   
@@ -670,7 +769,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../reference/" class="md-nav__link">
+      <a href="../../reference/" class="md-nav__link">
         
   
   
@@ -755,7 +854,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../getting-started/" class="md-nav__link">
+      <a href="../../../getting-started/" class="md-nav__link">
         
   
   
@@ -833,7 +932,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../getting-started/service-setup/grafana-smtp/" class="md-nav__link">
+      <a href="../../../getting-started/service-setup/grafana-smtp/" class="md-nav__link">
         
   
   
@@ -861,7 +960,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../getting-started/service-setup/grafana/" class="md-nav__link">
+      <a href="../../../getting-started/service-setup/grafana/" class="md-nav__link">
         
   
   
@@ -889,7 +988,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../getting-started/service-setup/sealed-secrets/" class="md-nav__link">
+      <a href="../../../getting-started/service-setup/sealed-secrets/" class="md-nav__link">
         
   
   
@@ -982,7 +1081,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../development/" class="md-nav__link">
+      <a href="../../../development/" class="md-nav__link">
         
   
   
@@ -1060,7 +1159,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../development/features/gateway/" class="md-nav__link">
+      <a href="../../../development/features/gateway/" class="md-nav__link">
         
   
   
@@ -1088,7 +1187,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../development/features/ingress/" class="md-nav__link">
+      <a href="../../../development/features/ingress/" class="md-nav__link">
         
   
   
@@ -1116,7 +1215,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../development/features/sealed-secrets/" class="md-nav__link">
+      <a href="../../../development/features/sealed-secrets/" class="md-nav__link">
         
   
   
@@ -1209,7 +1308,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../operations/" class="md-nav__link">
+      <a href="../../../operations/" class="md-nav__link">
         
   
   
@@ -1237,7 +1336,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../operations/echo-service/" class="md-nav__link">
+      <a href="../../../operations/echo-service/" class="md-nav__link">
         
   
   
@@ -1315,7 +1414,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../operations/upgrades/to-0.20/" class="md-nav__link">
+      <a href="../../../operations/upgrades/to-0.20/" class="md-nav__link">
         
   
   
@@ -1343,7 +1442,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../operations/upgrades/to-1.0/" class="md-nav__link">
+      <a href="../../../operations/upgrades/to-1.0/" class="md-nav__link">
         
   
   
@@ -1406,10 +1505,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#helm-apps" class="md-nav__link">
+  <a href="#1-one-password-sealed-twice" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Helm apps
+        1. One password, sealed twice
       
     </span>
   </a>
@@ -1417,10 +1516,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#kustomize-apps" class="md-nav__link">
+  <a href="#2-the-user-paws-data-pipelinecnpgroleyaml" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Kustomize apps
+        2. The user: paws-data-pipeline.cnpg/role.yaml
       
     </span>
   </a>
@@ -1428,10 +1527,21 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#order-of-operations" class="md-nav__link">
+  <a href="#3-the-database-paws-data-pipelinecnpgdatabaseyaml" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Order of operations
+        3. The database: paws-data-pipeline.cnpg/database.yaml
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-open-the-pr" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Open the PR
       
     </span>
   </a>
@@ -1458,53 +1568,72 @@
   
 
 
-<h1 id="connect-your-app">Connect your app<a class="headerlink" href="#connect-your-app" title="Permanent link"> ¶</a></h1>
-<p>Your app needs five things: host, port, database, user, password. Four are plain configuration; the password comes from the Secret you sealed into your namespace.</p>
-<div class="highlight"><pre><span></span><code>host      shared-cluster-rw.cloudnative-pg.svc.cluster.local   (-ro for a read replica)
-port      5432
-database  paws
-user      paws
-password  Secret paws-db-credentials, key "password"
+<h1 id="provision-a-database">Provision a database<a class="headerlink" href="#provision-a-database" title="Permanent link"> ¶</a></h1>
+<p>A user and an empty database on <code>shared-cluster</code>, in four files in the cluster repo. None of them is in <code>_infra/</code>. (New here? Start with the <a href="../">overview</a>.)</p>
+<h2 id="1-one-password-sealed-twice">1. One password, sealed twice<a class="headerlink" href="#1-one-password-sealed-twice" title="Permanent link"> ¶</a></h2>
+<p>Your Postgres user needs a password. cnpg reads it from a Secret in <code>cloudnative-pg</code> to set the role&rsquo;s password; your app reads it from a Secret in your own namespace. Same password, two SealedSecrets.</p>
+<p>Run this with <code>KUBECONFIG</code> pointing at the cluster you&rsquo;re adding to (sandbox first); sealed values only decrypt on the cluster that sealed them.</p>
+<div class="highlight"><pre><span></span><code><span class="nv">APP</span><span class="o">=</span>paws-data-pipeline<span class="p">;</span><span class="w"> </span><span class="nv">ROLE</span><span class="o">=</span>paws
+<span class="nv">PW</span><span class="o">=</span><span class="k">$(</span>openssl<span class="w"> </span>rand<span class="w"> </span>-base64<span class="w"> </span><span class="m">48</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>tr<span class="w"> </span>-dc<span class="w"> </span>A-Za-z0-9<span class="w"> </span><span class="p">|</span><span class="w"> </span>head<span class="w"> </span>-c<span class="w"> </span><span class="m">40</span><span class="k">)</span>
+<span class="k">for</span><span class="w"> </span>ns<span class="w"> </span><span class="k">in</span><span class="w"> </span>cloudnative-pg<span class="w"> </span><span class="nv">$APP</span><span class="p">;</span><span class="w"> </span><span class="k">do</span>
+<span class="w">  </span>kubectl<span class="w"> </span>create<span class="w"> </span>secret<span class="w"> </span>generic<span class="w"> </span><span class="nv">$ROLE</span>-db-credentials<span class="w"> </span>-n<span class="w"> </span><span class="nv">$ns</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--type<span class="w"> </span>kubernetes.io/basic-auth<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--from-literal<span class="o">=</span><span class="nv">username</span><span class="o">=</span><span class="nv">$ROLE</span><span class="w"> </span>--from-literal<span class="o">=</span><span class="nv">password</span><span class="o">=</span><span class="s2">"</span><span class="nv">$PW</span><span class="s2">"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--dry-run<span class="o">=</span>client<span class="w"> </span>-o<span class="w"> </span>yaml<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span><span class="p">|</span><span class="w"> </span>kubeseal<span class="w"> </span>--controller-name<span class="w"> </span>sealed-secrets<span class="w"> </span>--controller-namespace<span class="w"> </span>sealed-secrets<span class="w"> </span>--format<span class="w"> </span>yaml<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>&gt;<span class="w"> </span><span class="nv">$ns</span>.secrets/<span class="nv">$ROLE</span>-db-credentials.yaml
+<span class="k">done</span>
+<span class="nb">unset</span><span class="w"> </span>PW
 </code></pre></div>
-<h2 id="helm-apps">Helm apps<a class="headerlink" href="#helm-apps" title="Permanent link"> ¶</a></h2>
-<p>Make the chart read these from values, with the password from a Secret. In <code>templates/deployment.yaml</code>:</p>
-<div class="highlight"><pre><span></span><code><span class="nt">env</span><span class="p">:</span>
-<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">PGHOST</span>
-<span class="w">    </span><span class="nt">value</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{{</span><span class="w"> </span><span class="nv">.Values.database.host</span><span class="w"> </span><span class="p p-Indicator">}}</span>
-<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">PGDATABASE</span>
-<span class="w">    </span><span class="nt">value</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{{</span><span class="w"> </span><span class="nv">.Values.database.name</span><span class="w"> </span><span class="p p-Indicator">}}</span>
-<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">PGUSER</span>
-<span class="w">    </span><span class="nt">value</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{{</span><span class="w"> </span><span class="nv">.Values.database.user</span><span class="w"> </span><span class="p p-Indicator">}}</span>
-<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">PGPASSWORD</span>
-<span class="w">    </span><span class="nt">valueFrom</span><span class="p">:</span>
-<span class="w">      </span><span class="nt">secretKeyRef</span><span class="p">:</span>
-<span class="w">        </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{{</span><span class="w"> </span><span class="nv">.Values.database.passwordSecret</span><span class="w"> </span><span class="p p-Indicator">}}</span>
-<span class="w">        </span><span class="nt">key</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">password</span>
-</code></pre></div>
-<p>If the chart currently runs its own Postgres container (PAWS did, as a sidecar in the app pod), remove it, or keep it behind a <code>database.embedded: true</code> default so local dev is unchanged. Cut a release and bump <code>.holo/sources/&lt;app&gt;.toml</code> to the new tag.</p>
-<p>Then set the values in the cluster repo, <code>paws-data-pipeline/release-values.yaml</code>:</p>
-<div class="highlight"><pre><span></span><code><span class="nt">database</span><span class="p">:</span>
-<span class="w">  </span><span class="nt">embedded</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
-<span class="w">  </span><span class="nt">host</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">shared-cluster-rw.cloudnative-pg.svc.cluster.local</span>
+<p>That writes <code>cloudnative-pg.secrets/paws-db-credentials.yaml</code> and <code>paws-data-pipeline.secrets/paws-db-credentials.yaml</code>. You never need to write the password down; once deployed, anyone with access to your namespace can read it back from the Secret.</p>
+<h2 id="2-the-user-paws-data-pipelinecnpgroleyaml">2. The user: <code>paws-data-pipeline.cnpg/role.yaml</code><a class="headerlink" href="#2-the-user-paws-data-pipelinecnpgroleyaml" title="Permanent link"> ¶</a></h2>
+<p>A <code>DatabaseRole</code> is your Postgres user. cnpg creates it on <code>shared-cluster</code> and keeps it matching this spec, password included.</p>
+<div class="highlight"><pre><span></span><code><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">postgresql.cnpg.io/v1</span>
+<span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">DatabaseRole</span>
+<span class="nt">metadata</span><span class="p">:</span>
 <span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">paws</span>
-<span class="w">  </span><span class="nt">user</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">paws</span>
-<span class="w">  </span><span class="nt">passwordSecret</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">paws-db-credentials</span>
+<span class="w">  </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">cloudnative-pg</span><span class="w">        </span><span class="c1"># required: cnpg wants this next to the Cluster</span>
+<span class="nt">spec</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">cluster</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">shared-cluster</span>
+<span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">paws</span>
+<span class="w">  </span><span class="nt">login</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">  </span><span class="nt">connectionLimit</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">20</span><span class="w">              </span><span class="c1"># the cluster allows 100 in total; be a good neighbour</span>
+<span class="w">  </span><span class="nt">passwordSecret</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">paws-db-credentials</span>
+<span class="w">  </span><span class="nt">databaseRoleReclaimPolicy</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">retain</span><span class="w">   </span><span class="c1"># deleting this file does not drop the role</span>
 </code></pre></div>
-<h2 id="kustomize-apps">Kustomize apps<a class="headerlink" href="#kustomize-apps" title="Permanent link"> ¶</a></h2>
-<p>See <code>balancer/</code> for a worked example: a <code>balancer.env</code> file rendered into a ConfigMap for the non-secret settings, the password merged into the app&rsquo;s existing SealedSecret with <code>kubeseal --merge-into</code>, and the <code>cnpg/</code> files included from the kustomization. One thing to know: a ConfigMap generated with a stable name does not restart your pod when it changes, so balancer carries a pod-template annotation it bumps on purpose.</p>
-<h2 id="order-of-operations">Order of operations<a class="headerlink" href="#order-of-operations" title="Permanent link"> ¶</a></h2>
-<ol>
-<li>Database PR (previous page). Empty database exists.</li>
-<li>App change in your repo, tagged; pin bump here.</li>
-<li><a href="../data-and-backups/#loading-existing-data">Load your data</a> if you have any.</li>
-<li>Values PR. The app rolls onto the shared cluster.</li>
-</ol>
-<p>Steps 1 and 4 are small PRs in the cluster repo; step 2 is in yours. Doing it on sandbox first means step 4 on live is a copy.</p>
+<h2 id="3-the-database-paws-data-pipelinecnpgdatabaseyaml">3. The database: <code>paws-data-pipeline.cnpg/database.yaml</code><a class="headerlink" href="#3-the-database-paws-data-pipelinecnpgdatabaseyaml" title="Permanent link"> ¶</a></h2>
+<div class="highlight"><pre><span></span><code><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">postgresql.cnpg.io/v1</span>
+<span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Database</span>
+<span class="nt">metadata</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">paws</span>
+<span class="w">  </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">cloudnative-pg</span>
+<span class="nt">spec</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">cluster</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">shared-cluster</span>
+<span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">paws</span>
+<span class="w">  </span><span class="nt">owner</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">paws</span>
+<span class="w">  </span><span class="nt">extensions</span><span class="p">:</span><span class="w">                      </span><span class="c1"># only if you need them</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">postgis</span>
+<span class="w">      </span><span class="nt">ensure</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">present</span>
+</code></pre></div>
 <div class="admonition note">
-<p class="admonition-title">Expect one restart if you change a sealed password</p>
-<p>The deploy applies your SealedSecret and your Deployment within the same second, and the sealed-secrets controller takes about a second to write the Secret. A pod that starts in that gap reads the old value and restarts once. Harmless, and not a sign something is wrong.</p>
+<p class="admonition-title">Extensions go here, not in your migrations</p>
+<p>Your role is not a superuser, so <code>CREATE EXTENSION</code> in a migration will fail. Declare the extension on the <code>Database</code> and the operator installs it before your app connects. Django, Rails, Prisma and the rest are happy once it exists.</p>
 </div>
-<p>Next: <a href="../data-and-backups/">Data and backups</a>.</p>
+<h2 id="4-open-the-pr">4. Open the PR<a class="headerlink" href="#4-open-the-pr" title="Permanent link"> ¶</a></h2>
+<p>Commit the four files, run the projection diff (<a href="../../how-deploys-work/#seeing-the-projection-yourself">how</a>), and open the PR. You should see exactly four additions, all under <code>cloudnative-pg/</code>: a <code>SealedSecret</code>, a <code>DatabaseRole</code>, a <code>Database</code>, and a second <code>SealedSecret</code> under your namespace. Merge it and its deploy PR.</p>
+<p>Then check it took:</p>
+<div class="highlight"><pre><span></span><code>kubectl<span class="w"> </span>-n<span class="w"> </span>cloudnative-pg<span class="w"> </span>get<span class="w"> </span>databaserole<span class="w"> </span>paws<span class="w"> </span>-o<span class="w"> </span><span class="nv">jsonpath</span><span class="o">=</span><span class="s1">'{.status}'</span>
+kubectl<span class="w"> </span>-n<span class="w"> </span>cloudnative-pg<span class="w"> </span>get<span class="w"> </span>database<span class="w"> </span>paws<span class="w"> </span>-o<span class="w"> </span><span class="nv">jsonpath</span><span class="o">=</span><span class="s1">'{.status.applied}{"\n"}'</span>
+</code></pre></div>
+<p>You now have an empty database named <code>paws</code>, owned by a user named <code>paws</code>, reachable from inside the cluster at <code>shared-cluster-rw.cloudnative-pg.svc.cluster.local</code>. Nothing uses it yet.</p>
+<div class="admonition warning">
+<p class="admonition-title">Secret before role</p>
+<p>If cnpg reconciles the <code>DatabaseRole</code> before its Secret exists, it marks the role failed and does not retry on its own. Landing both in one PR is enough. If it happens anyway: <code>kubectl annotate cluster -n cloudnative-pg shared-cluster cnpg.io/reconciliationLoop="$(date +%s)" --overwrite</code>, and check <code>.status</code> again.</p>
+</div>
+<p>Next: <a href="../connect/">Connect your app</a>.</p>
 
 
 
@@ -1554,10 +1683,10 @@ password  Secret paws-db-credentials, key "password"
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.tabs"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      <script src="../../../assets/javascripts/bundle.d7400e89.min.js"></script>
       
         <script src="https://unpkg.com/mermaid@8.5.0/dist/mermaid.min.js"></script>
       
