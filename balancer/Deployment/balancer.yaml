@@ -13,11 +13,20 @@ spec:
   strategy: {}
   template:
     metadata:
+      annotations:
+        cfp.io/config-revision: 2026-10-cnpg-cutover
       labels:
         app: balancer
     spec:
       containers:
-        - envFrom:
+        - args:
+            - python
+            - manage.py
+            - runserver
+            - 0.0.0.0:8000
+            - '--noreload'
+            - '--insecure'
+          envFrom:
             - secretRef:
                 name: balancer-config
             - configMapRef:
