@@ -62,6 +62,18 @@ patches:
       - op: add
         path: /spec/template/spec/containers/0/args
         value: ["python", "manage.py", "runserver", "0.0.0.0:8000", "--noreload", "--insecure"]
+  # Pin the app's route to the apex listener. Upstream's route names no
+  # hostnames (so it inherits every listener on the Gateway) and no
+  # sectionName; left alone it also claims the www listener and, being the
+  # older route with equal specificity, beats the www->apex redirect in
+  # _gateways/balancer.yaml. Listener names are this repo's to define.
+  - target:
+      kind: HTTPRoute
+      name: balancer
+    patch: |-
+      - op: add
+        path: /spec/parentRefs/0/sectionName
+        value: https
   - target:
       kind: Namespace
       name: balancer
