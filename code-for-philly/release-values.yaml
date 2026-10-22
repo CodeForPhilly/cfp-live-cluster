@@ -6,7 +6,7 @@ site:
 
   image:
     repository: ghcr.io/codeforphilly/codeforphilly.org
-    tag: 1.3.16
+    tag: 1.3.17
 
   secrets:
     - name: 'discourse'
