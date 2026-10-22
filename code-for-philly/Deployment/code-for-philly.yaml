@@ -36,6 +36,7 @@ spec:
                 pkg_ident = "core/mysql"
             - name: HAB_SITE
               value: |
+                snippet = "session.upload_progress.enabled = Off"
                 default_timezone = "America/New_York"
 
                 [sites.default]
@@ -72,7 +73,7 @@ spec:
                 name: saml2
             - secretRef:
                 name: slack
-          image: ghcr.io/codeforphilly/codeforphilly.org:1.3.16
+          image: ghcr.io/codeforphilly/codeforphilly.org:1.3.17
           imagePullPolicy: Always
           name: code-for-philly-site
           ports:
